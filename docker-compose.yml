@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ecovestiaire-db
+    environment:
+      POSTGRES_DB: ecovestiaire_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: salmahm
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./ecovestiaire-backend
+    container_name: ecovestiaire-api
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./ecovestiaire-backend/.env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecovestiaire_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: salmahm
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    volumes:
+      - backend_uploads:/app/uploads/items
+
+  frontend:
+    build: ./ecovestiaire-frontend
+    container_name: ecovestiaire-web
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    restart: always
+
+volumes:
+  postgres_data:
+  backend_uploads:
