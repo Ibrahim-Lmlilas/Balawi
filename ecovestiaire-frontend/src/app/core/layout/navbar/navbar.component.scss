@@ -1,0 +1,69 @@
+.dropdown-balawi {
+  border: 4px solid #0B0B0B;
+  border-radius: 0;
+  box-shadow: 8px 8px 0px 0px #A3FF12;
+  background: white;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 12px; // Habat-ha chwya
+  width: 260px;
+  z-index: 100;
+  
+  &__item {
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 16px 20px;
+    transition: all 0.2s;
+    border-bottom: 2px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    color: #0B0B0B;
+
+    &:hover {
+      background: #A3FF12;
+      color: #0B0B0B;
+      padding-left: 28px;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--logout {
+      color: #ff4d4d;
+      &:hover {
+        background: #0B0B0B;
+        color: white;
+      }
+    }
+  }
+
+  &__profile-box {
+    background: #0B0B0B;
+    color: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 4px solid #0B0B0B;
+  }
+}
+
+// Responsive Landing
+@media (max-width: 768px) {
+  .font-heading {
+    &.text-5xl, &.text-7xl {
+      font-size: 2.5rem !important;
+      line-height: 1 !important;
+    }
+  }
+
+  .grid {
+    gap: 2rem !important;
+  }
+}

@@ -1,0 +1,118 @@
+<div class="fixed top-0 left-0 w-full z-[100]">
+  <!-- Top Announcement Bar -->
+  <div class="bg-balawi-neon text-balawi-bg py-2 px-4 border-b border-balawi-bg">
+    <div class="max-w-7xl mx-auto flex justify-center items-center text-[10px] md:text-xs font-heading tracking-[0.1em] md:tracking-[0.2em] uppercase text-center">
+      <span class="truncate">LIVRAISON SÉCURISÉE | MODE CIRCULAIRE | DONNEZ UNE SECONDE VIE À VOTRE GARDE-ROBE | ARTICLES VÉRIFIÉS | PAIEMENT SÉCURISÉ</span>
+    </div>
+  </div>
+
+  <nav class="w-full bg-white/95 backdrop-blur-sm border-b border-balawi-bg/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center h-20 gap-2 md:gap-4">
+
+      <!-- LEFT: Search Bar (Hidden on small mobile if logo is too big) -->
+      <div class="flex-1 flex items-center">
+        <div class="relative w-full max-w-[120px] md:max-w-sm">
+          <div class="absolute inset-y-0 left-0 pl-2 md:pl-3 flex items-center pointer-events-none">
+            <mat-icon class="text-gray-400 !text-lg md:!text-xl">search</mat-icon>
+          </div>
+          <input #searchInput type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+            placeholder="Rechercher"
+            class="block w-full pl-8 md:pl-10 pr-2 md:pr-4 py-1.5 md:py-2 border-2 border-balawi-bg rounded-none bg-white text-xs md:text-sm font-slogan focus:outline-none focus:ring-0 focus:border-balawi-neon transition-colors">
+        </div>
+      </div>
+
+      <!-- CENTER: Logo -->
+      <div class="flex-none flex justify-center cursor-pointer" routerLink="/">
+        <div class="flex items-center justify-center h-12 md:h-20 py-2">
+          <img src="/BALAWInobg.png" alt="BALAWI" class="h-full w-auto object-contain">
+        </div>
+      </div>
+
+      <!-- RIGHT: Actions -->
+      <div class="flex-1 flex items-center gap-2 md:gap-5 justify-end">
+        
+        <!-- VENDRE BUTTON (DESKTOP) -->
+        <a routerLink="/items/publish" 
+           class="hidden lg:flex items-center gap-2 bg-balawi-neon text-balawi-bg font-heading text-xs tracking-widest px-5 py-2 border-2 border-balawi-bg shadow-[4px_4px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all uppercase italic">
+          <mat-icon class="!text-lg">add_box</mat-icon>
+          Vendre
+        </a>
+
+        <ng-container *ngIf="authService.currentUser$ | async as user; else guestActions">
+
+          <div class="flex items-center gap-2 md:gap-4 pr-2 border-r border-balawi-bg/10">
+            <button class="p-1 text-balawi-bg hover:text-balawi-neon transition-colors relative hidden sm:block" routerLink="/notifications" title="Notifications">
+              <mat-icon class="!text-xl">notifications</mat-icon>
+              <span *ngIf="(notificationService.unreadCount$ | async) || 0 > 0"
+                class="absolute -top-1 -right-1 w-4 h-4 bg-balawi-neon text-balawi-bg text-[8px] font-bold flex items-center justify-center border border-balawi-bg">
+                {{ notificationService.unreadCount$ | async }}
+              </span>
+            </button>
+
+            <button class="p-1 text-balawi-bg hover:text-balawi-neon transition-colors relative" routerLink="/messages" title="Messages">
+              <mat-icon class="!text-xl">chat_bubble</mat-icon>
+              <span *ngIf="(chatService.unreadCount$ | async) || 0 > 0"
+                class="absolute -top-1 -right-1 w-4 h-4 bg-balawi-neon text-balawi-bg text-[8px] font-bold flex items-center justify-center border border-balawi-bg">
+                {{ chatService.unreadCount$ | async }}
+              </span>
+            </button>
+
+            <button class="p-1 text-balawi-bg hover:text-red-500 transition-colors hidden sm:block" routerLink="/favorites" title="Favoris">
+              <mat-icon class="!text-xl">favorite</mat-icon>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 relative">
+            <button class="w-10 h-10 border-2 border-balawi-bg overflow-hidden bg-balawi-neon flex items-center justify-center transition-all hover:shadow-[4px_4px_0px_0px_#0B0B0B] hover:-translate-x-1 hover:-translate-y-1" 
+                    (click)="toggleProfileMenu()">
+              <img [src]="authService.toAbsoluteUrl(user.profilePhotoUrl)" class="w-full h-full object-cover">
+            </button>
+
+            <!-- DROP DOWN BALAWI STYLE -->
+            <div *ngIf="isProfileMenuOpen()"
+              class="absolute right-0 top-full mt-4 w-64 dropdown-balawi z-50">
+              <div class="dropdown-balawi__profile-box">
+                <div class="w-10 h-10 border-2 border-balawi-neon overflow-hidden shrink-0">
+                  <img [src]="authService.toAbsoluteUrl(user.profilePhotoUrl)" class="w-full h-full object-cover">
+                </div>
+                <div class="overflow-hidden">
+                  <p class="font-heading text-sm truncate uppercase tracking-wider text-balawi-neon italic">{{ user.firstName }}</p>
+                  <p class="font-slogan text-[9px] truncate text-white/50 uppercase">MON COMPTE</p>
+                </div>
+              </div>
+              
+              <div class="bg-white">
+                <a [routerLink]="['/users', user.id]" (click)="isProfileMenuOpen.set(false)" class="dropdown-balawi__item flex items-center gap-3">
+                  <mat-icon class="!text-lg">person_outline</mat-icon> Profil
+                </a>
+                <a routerLink="/my-sales" (click)="isProfileMenuOpen.set(false)" class="dropdown-balawi__item flex items-center gap-3">
+                  <mat-icon class="!text-lg">local_mall</mat-icon> Mes Ventes
+                </a>
+                <a routerLink="/my-purchases" (click)="isProfileMenuOpen.set(false)" class="dropdown-balawi__item flex items-center gap-3">
+                  <mat-icon class="!text-lg">shopping_cart</mat-icon> Mes Achats
+                </a>
+                <div class="border-t border-gray-100 my-1"></div>
+                <button (click)="logout()" class="dropdown-balawi__item dropdown-balawi__item--logout w-full flex items-center gap-3">
+                  <mat-icon class="!text-lg">logout</mat-icon> Déconnexion
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #guestActions>
+          <div class="flex items-center gap-3">
+            <a routerLink="/login" class="text-xs font-heading tracking-widest text-balawi-bg hover:text-balawi-neon px-3 py-2 transition-colors uppercase italic underline underline-offset-4 decoration-balawi-neon decoration-4">
+              Login
+            </a>
+            <a routerLink="/register" class="bg-balawi-bg text-balawi-neon text-xs font-heading tracking-widest px-6 py-2.5 hover:bg-black transition-all uppercase shadow-[6px_6px_0px_0px_#A3FF12] italic">
+              Join
+            </a>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+  </div>
+</nav></div>
