@@ -1,0 +1,107 @@
+<div class="min-h-screen w-full bg-white flex flex-col lg:flex-row overflow-hidden">
+  
+  <!-- LEFT PANEL: FORM -->
+  <div class="lg:w-1/2 flex items-center justify-center p-6 lg:p-12 relative order-2 lg:order-1 bg-white" @fadeSlide>
+    <div class="w-full max-w-sm">
+      
+      <div class="mb-8">
+        <h2 class="text-4xl font-heading text-balawi-bg uppercase tracking-tight italic mb-1">S'INSCRIRE</h2>
+        <div class="w-16 h-1.5 bg-balawi-neon"></div>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="bg-red-500 text-white p-3 border-[3px] border-balawi-bg font-heading text-[10px] uppercase tracking-widest shadow-[4px_4px_0px_0px_#0B0B0B]">
+          {{ errorMessage }}
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest">PRÉNOM</label>
+            <input type="text" formControlName="firstName" placeholder="EX: ANAS"
+                   class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all placeholder:text-balawi-bg/20">
+          </div>
+          <div class="space-y-1.5">
+            <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest">NOM</label>
+            <input type="text" formControlName="lastName" placeholder="EX: BALAWI"
+                   class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all placeholder:text-balawi-bg/20">
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="space-y-1.5">
+          <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest">EMAIL</label>
+          <input type="email" formControlName="email" placeholder="EX: VOTRE@EMAIL.MA"
+                 class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all placeholder:text-balawi-bg/20">
+        </div>
+
+        <!-- Password Field -->
+        <div class="space-y-1.5">
+          <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest">MOT DE PASSE</label>
+          <input type="password" formControlName="password" placeholder="••••••••"
+                 class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs tracking-widest focus:bg-balawi-neon/10 outline-none transition-all placeholder:text-balawi-bg/20">
+        </div>
+
+        <!-- Profile Picture -->
+        <div class="space-y-2">
+          <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest">PHOTO DE PROFIL</label>
+          <div class="flex items-center gap-4 p-3 border-[3px] border-balawi-bg/10 hover:border-balawi-bg transition-colors">
+            <div class="w-14 h-14 bg-balawi-bg border-[3px] border-balawi-neon relative overflow-hidden shrink-0 flex items-center justify-center">
+              <img *ngIf="imagePreview" [src]="imagePreview" class="w-full h-full object-cover">
+              <mat-icon *ngIf="!imagePreview" class="text-balawi-neon !text-2xl !flex !items-center !justify-center">person</mat-icon>
+            </div>
+            <div class="flex-1">
+              <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden">
+              <button type="button" (click)="fileInput.click()" class="font-heading text-[9px] text-balawi-bg uppercase tracking-widest border-b-2 border-balawi-bg hover:bg-balawi-neon transition-all px-2 py-0.5">
+                {{ imagePreview ? 'CHANGER' : 'CHOISIR UNE PHOTO' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="pt-2">
+          <button type="submit" [disabled]="registerForm.invalid || isLoading"
+                  class="w-full py-4 bg-balawi-neon text-balawi-bg font-heading text-xl uppercase tracking-[0.2em] border-[3px] border-balawi-bg shadow-[8px_8px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[8px] hover:translate-y-[8px] transition-all flex items-center justify-center gap-3 disabled:opacity-50 italic">
+            <span *ngIf="!isLoading">CRÉER LE COMPTE</span>
+            <div *ngIf="isLoading" class="w-6 h-6 border-4 border-balawi-bg border-t-transparent rounded-full animate-spin"></div>
+          </button>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center pt-2">
+          <a routerLink="/login" class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest border-b-2 border-balawi-neon hover:bg-balawi-neon transition-all px-2 py-0.5 inline-block">SE CONNECTER</a>
+        </p>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: BRANDING -->
+  <div class="lg:w-1/2 bg-balawi-bg relative flex flex-col justify-center p-8 lg:p-16 overflow-hidden border-t-[8px] lg:border-t-0 lg:border-l-[8px] border-balawi-bg order-1 lg:order-2">
+    <!-- Background Texture/Shapes -->
+    <div class="absolute top-0 left-0 w-48 h-48 bg-balawi-neon rotate-12 -translate-x-24 -translate-y-24"></div>
+    <div class="absolute bottom-0 right-0 w-64 h-64 border-[15px] border-balawi-neon/10 rounded-full translate-x-32 translate-y-32"></div>
+    
+    <div class="relative z-10 space-y-6 text-right lg:text-left">
+      <div class="inline-block bg-balawi-neon text-balawi-bg px-3 py-0.5 font-heading text-[10px] tracking-[0.3em] uppercase">
+        REJOIGNEZ-NOUS
+      </div>
+      <h1 class="text-6xl md:text-8xl font-heading text-white uppercase leading-[0.8] tracking-tighter italic">
+        DEVENEZ <br>
+        <span class="text-balawi-neon">BALAWI</span>
+      </h1>
+      <p class="font-slogan text-white/50 text-base uppercase tracking-widest max-w-sm ml-auto lg:ml-0">
+        VOTRE VOYAGE COMMENCE ICI.
+      </p>
+    </div>
+
+    <!-- Back Link -->
+    <div class="absolute top-6 right-6">
+      <a routerLink="/" class="flex items-center gap-2 text-balawi-neon font-heading text-xs uppercase tracking-widest hover:text-white transition-colors group">
+        RETOUR
+        <mat-icon class="!text-sm transition-transform group-hover:translate-x-1">arrow_forward</mat-icon>
+      </a>
+    </div>
+  </div>
+</div>
