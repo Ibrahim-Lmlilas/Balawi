@@ -1,0 +1,134 @@
+<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+  <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+    <div class="p-8 sm:p-12">
+      <div class="flex items-center justify-between mb-10">
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Modifier l'article</h1>
+        <button routerLink="/" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div *ngIf="isLoading()" class="space-y-4 animate-pulse">
+        <div class="h-8 bg-gray-100 rounded w-1/3"></div>
+        <div class="h-10 bg-gray-100 rounded"></div>
+        <div class="h-10 bg-gray-100 rounded"></div>
+        <div class="h-40 bg-gray-100 rounded"></div>
+      </div>
+
+      <div *ngIf="!isLoading() && errorMessage()" class="bg-red-50 border border-red-100 text-red-700 text-sm rounded-xl px-4 py-3 mb-6">
+        {{ errorMessage() }}
+      </div>
+
+      <form *ngIf="!isLoading()" [formGroup]="editForm" (ngSubmit)="onSubmit()" class="space-y-10">
+        <div *ngIf="item() as it" class="space-y-4">
+          <div class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Photos actuelles</div>
+          <div class="flex gap-3 overflow-x-auto pb-2">
+            <img *ngFor="let photo of it.photos" [src]="photo" alt="Photo actuelle" class="w-20 h-20 object-cover rounded-xl border border-gray-200" />
+          </div>
+          <div class="text-xs text-gray-500">Si vous ajoutez de nouvelles photos, elles remplaceront les anciennes.</div>
+        </div>
+
+        <div class="space-y-4">
+          <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wider">Nouvelles photos</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <label class="relative flex flex-col items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-2xl hover:border-[#16A34A] hover:bg-green-50 transition-all cursor-pointer group">
+              <input type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" multiple>
+              <mat-icon class="text-gray-400 group-hover:text-[#16A34A] transition-colors">add_a_photo</mat-icon>
+              <span class="text-xs text-gray-500 mt-2 font-medium">Ajouter</span>
+            </label>
+
+            <div *ngFor="let preview of previews(); let i = index" class="relative group h-32">
+              <img [src]="preview" class="w-full h-full object-cover rounded-2xl shadow-sm" alt="Aperçu article">
+              <button type="button" (click)="removeFile(i)" 
+                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                <mat-icon class="text-sm">close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-2">
+            <label for="title" class="block text-sm font-semibold text-gray-700 uppercase tracking-wider">Titre <span class="text-red-500">*</span></label>
+            <input id="title" type="text" formControlName="title" placeholder="Nom de l'article"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent outline-none transition-all placeholder-gray-400">
+            <p *ngIf="editForm.get('title')?.touched && editForm.get('title')?.invalid" class="text-red-500 text-xs font-medium">
+              Le titre est obligatoire (max 150 caractères).
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <label for="categoryId" class="block text-sm font-semibold text-gray-700 uppercase tracking-wider">Catégorie <span class="text-red-500">*</span></label>
+            <select id="categoryId" formControlName="categoryId"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent outline-none transition-all bg-white appearance-none cursor-pointer">
+              <option value="" disabled selected>Choisir une catégorie</option>
+              <option *ngFor="let cat of categories()" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+            <p *ngIf="editForm.get('categoryId')?.touched && editForm.get('categoryId')?.invalid" class="text-red-500 text-xs font-medium">
+              Veuillez sélectionner une catégorie.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label for="description" class="block text-sm font-semibold text-gray-700 uppercase tracking-wider">Description <span class="text-red-500">*</span></label>
+          <textarea id="description" formControlName="description" rows="5" placeholder="Décrivez votre article"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent outline-none transition-all placeholder-gray-400 resize-none"></textarea>
+          <p *ngIf="editForm.get('description')?.touched && editForm.get('description')?.invalid" class="text-red-500 text-xs font-medium">
+            La description est obligatoire (max 2000 caractères).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="space-y-2">
+            <label for="price" class="block text-sm font-semibold text-gray-700 uppercase tracking-wider">Prix (€) <span class="text-red-500">*</span></label>
+            <input id="price" type="number" formControlName="price" placeholder="0.00"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent outline-none transition-all placeholder-gray-400">
+            <p *ngIf="editForm.get('price')?.touched && editForm.get('price')?.invalid" class="text-red-500 text-xs font-medium">
+              Le prix est obligatoire et doit être positif.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <label for="size" class="block text-sm font-semibold text-gray-700 uppercase tracking-wider">Taille</label>
+            <select id="size" formControlName="size"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent outline-none transition-all bg-white cursor-pointer">
+              <option value="">N/A</option>
+              <option *ngFor="let s of sizes" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label for="conditionLabel" class="block text-sm font-semibold text-gray-700 uppercase tracking-wider">État</label>
+            <select id="conditionLabel" formControlName="conditionLabel"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent outline-none transition-all bg-white cursor-pointer">
+              <option value="">Sélectionner l'état</option>
+              <option *ngFor="let c of conditions" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage()" class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl">
+          <p class="text-red-700 text-sm font-medium">{{ errorMessage() }}</p>
+        </div>
+
+        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-100">
+          <button type="button" routerLink="/" class="px-8 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+            Annuler
+          </button>
+          <button type="submit" [disabled]="isSubmitting()"
+            class="px-10 py-3 rounded-xl font-bold text-white bg-[#16A34A] hover:bg-[#15803d] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-100 transition-all flex items-center">
+            <span *ngIf="!isSubmitting()">Enregistrer</span>
+            <span *ngIf="isSubmitting()" class="flex items-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Enregistrement...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,158 @@
+<div class="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- HEADER -->
+    <div class="mb-8 border-b-[4px] border-balawi-bg pb-4 flex items-end justify-between">
+      <div class="space-y-1.5">
+        <h1 class="text-xl md:text-3xl font-heading text-balawi-bg uppercase tracking-tight leading-none italic font-black">
+          VENDRE UN <span class="text-balawi-neon bg-balawi-bg px-2">ARTICLE</span>
+        </h1>
+        <div class="w-24 h-1.5 bg-balawi-neon"></div>
+      </div>
+      <button routerLink="/" class="w-10 h-10 border-[3px] border-balawi-bg flex items-center justify-center hover:bg-balawi-neon transition-all shadow-[3px_3px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
+        <mat-icon class="!text-xl !w-5 !h-5 flex items-center justify-center">close</mat-icon>
+      </button>
+    </div>
+
+    <!-- FORM CONTAINER -->
+    <div class="bg-white border-[4px] border-balawi-bg shadow-[10px_10px_0px_0px_#A3FF12] p-6 sm:p-10">
+      <form [formGroup]="publishForm" (ngSubmit)="onSubmit()" class="space-y-10">
+        
+        <!-- SECTION PHOTOS -->
+        <div class="space-y-5">
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 bg-balawi-bg text-balawi-neon flex items-center justify-center font-heading text-lg italic font-black">01</span>
+            <h2 class="font-heading text-xl text-balawi-bg uppercase tracking-tight italic font-black">PHOTOS DE L'ARTICLE</h2>
+          </div>
+          
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
+            <!-- Zone d'upload -->
+            <label class="relative flex flex-col items-center justify-center aspect-square border-[3px] border-dashed border-balawi-bg/30 hover:border-balawi-neon hover:bg-balawi-neon/5 transition-all cursor-pointer group overflow-hidden">
+              <input type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" multiple>
+              <div class="flex flex-col items-center justify-center">
+                <mat-icon class="!text-3xl !w-8 !h-8 flex items-center justify-center text-balawi-bg/30 group-hover:text-balawi-bg transition-colors">add_a_photo</mat-icon>
+                <span class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest mt-2 italic font-bold">AJOUTER</span>
+              </div>
+              <div class="absolute inset-0 bg-balawi-neon -translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10"></div>
+            </label>
+
+            <!-- Previews -->
+            <div *ngFor="let preview of previews(); let i = index" class="relative group aspect-square border-[3px] border-balawi-bg shadow-[3px_3px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all overflow-hidden">
+              <img [src]="preview" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="Aperçu">
+              <button type="button" (click)="removeFile(i)" 
+                class="absolute top-2 right-2 bg-red-500 text-white border-2 border-balawi-bg p-1 hover:bg-balawi-bg transition-colors z-20 flex items-center justify-center">
+                <mat-icon class="!text-xs !w-3.5 !h-3.5 flex items-center justify-center">close</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="errorMessage() && selectedFiles().length === 0" class="bg-red-500 text-white px-3 py-1.5 font-heading text-[10px] uppercase tracking-widest border-[2px] border-balawi-bg inline-block italic font-bold">
+            {{ errorMessage() }}
+          </div>
+        </div>
+
+        <!-- SECTION INFOS -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 bg-balawi-bg text-balawi-neon flex items-center justify-center font-heading text-lg italic font-black">02</span>
+            <h2 class="font-heading text-xl text-balawi-bg uppercase tracking-tight italic font-black">DÉTAILS</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Titre -->
+            <div class="space-y-2">
+              <label for="title" class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">Titre <span class="text-red-500">*</span></label>
+              <input id="title" type="text" formControlName="title" placeholder="EX: VESTE EN JEAN LEVI'S"
+                class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all placeholder:text-balawi-bg/20 italic font-bold">
+              <p *ngIf="publishForm.get('title')?.touched && publishForm.get('title')?.invalid" class="text-red-600 font-heading text-[9px] uppercase italic font-bold">
+                Le titre est obligatoire (max 150 caractères).
+              </p>
+            </div>
+
+            <!-- Catégorie -->
+            <div class="space-y-2">
+              <label for="categoryId" class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">Catégorie <span class="text-red-500">*</span></label>
+              <div class="relative">
+                <select id="categoryId" formControlName="categoryId"
+                  class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all bg-white appearance-none cursor-pointer italic font-bold">
+                  <option value="" disabled selected>CHOISIR UNE CATÉGORIE</option>
+                  <option *ngFor="let cat of categories()" [value]="cat.id">{{ cat.name | uppercase }}</option>
+                </select>
+                <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none !text-lg !w-6 !h-6 !flex !items-center !justify-center !leading-none">expand_more</mat-icon>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="space-y-2">
+            <label for="description" class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">Description <span class="text-red-500">*</span></label>
+            <textarea id="description" formControlName="description" rows="4" placeholder="DÉCRIVEZ VOTRE ARTICLE (MATIÈRE, COUPE, DÉFAUTS...)"
+              class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all placeholder:text-balawi-bg/20 resize-none italic font-bold"></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION CARACTÉRISTIQUES -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 bg-balawi-bg text-balawi-neon flex items-center justify-center font-heading text-lg italic font-black">03</span>
+            <h2 class="font-heading text-xl text-balawi-bg uppercase tracking-tight italic font-black">PRIX & TAILLE</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Prix -->
+            <div class="space-y-2">
+              <label for="price" class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">Prix (MAD) <span class="text-red-500">*</span></label>
+              <div class="relative">
+                <input id="price" type="number" formControlName="price" placeholder="0.00"
+                  class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xl tracking-tighter focus:bg-balawi-neon/10 outline-none transition-all italic font-black">
+                <span class="absolute right-5 top-1/2 -translate-y-1/2 font-heading text-xs italic font-bold">MAD</span>
+              </div>
+            </div>
+
+            <!-- Taille -->
+            <div class="space-y-2">
+              <label for="size" class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">Taille</label>
+              <div class="relative">
+                <select id="size" formControlName="size"
+                  class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all bg-white appearance-none cursor-pointer italic font-bold">
+                  <option value="">N/A</option>
+                  <option *ngFor="let s of sizes" [value]="s">{{ s }}</option>
+                </select>
+                <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none !text-lg !w-6 !h-6 !flex !items-center !justify-center !leading-none">expand_more</mat-icon>
+              </div>
+            </div>
+
+            <!-- État -->
+            <div class="space-y-2">
+              <label for="conditionLabel" class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">État</label>
+              <div class="relative">
+                <select id="conditionLabel" formControlName="conditionLabel"
+                  class="w-full px-4 py-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-tight focus:bg-balawi-neon/10 outline-none transition-all bg-white appearance-none cursor-pointer italic font-bold">
+                  <option value="">SÉLECTIONNER L'ÉTAT</option>
+                  <option *ngFor="let c of conditions" [value]="c">{{ c | uppercase }}</option>
+                </select>
+                <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none !text-lg !w-6 !h-6 !flex !items-center !justify-center !leading-none">expand_more</mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage() && selectedFiles().length > 0" class="bg-red-500 text-white p-3 border-[3px] border-balawi-bg font-heading text-xs uppercase tracking-widest italic font-bold">
+          {{ errorMessage() }}
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-5 pt-8 border-t-[3px] border-balawi-bg">
+          <button type="button" routerLink="/" class="font-heading text-xs uppercase tracking-widest text-balawi-bg hover:text-balawi-neon transition-colors italic font-bold">
+            ANNULER
+          </button>
+          
+          <button type="submit" [disabled]="isSubmitting()"
+            class="w-full sm:w-auto px-8 py-4 bg-balawi-neon text-balawi-bg font-heading text-lg uppercase tracking-widest border-[3px] border-balawi-bg shadow-[6px_6px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] transition-all flex items-center justify-center gap-3 disabled:opacity-50 italic font-black">
+            <span *ngIf="!isSubmitting()">PUBLIER L'ARTICLE</span>
+            <div *ngIf="isSubmitting()" class="w-5 h-5 border-3 border-balawi-bg border-t-transparent rounded-full animate-spin"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
