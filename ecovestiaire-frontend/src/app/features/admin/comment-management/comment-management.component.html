@@ -1,0 +1,111 @@
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <header class="border-l-4 border-balawi-neon pl-4">
+      <h1 class="text-3xl font-heading text-balawi-bg uppercase tracking-tight">Commentaires</h1>
+      <p class="text-[10px] font-slogan text-balawi-bg/70 mt-1 uppercase tracking-widest font-bold">Modération du flux</p>
+    </header>
+
+    <div class="flex flex-col md:flex-row gap-3">
+      <div class="relative w-full md:w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 !text-xl">search</mat-icon>
+        <input
+          type="text"
+          [value]="query()"
+          (input)="onQueryInput(($any($event.target)).value)"
+          placeholder="Rechercher..."
+          class="w-full pl-10 pr-4 py-2 bg-white border-2 border-balawi-bg rounded-none outline-none focus:border-balawi-neon transition-all font-slogan text-sm text-balawi-bg uppercase tracking-wider"
+        />
+      </div>
+      
+      <select [value]="sort()" (change)="onSortChange(($any($event.target)).value)" class="brutalist-select px-6">
+        <option value="createdAt,desc">Plus récents</option>
+        <option value="createdAt,asc">Plus anciens</option>
+      </select>
+
+      <button (click)="applyFilters()" class="px-6 py-2 bg-balawi-neon text-balawi-bg border-2 border-balawi-bg font-heading uppercase tracking-widest text-sm hover:bg-white transition-all">
+        Filtrer
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white border-2 border-balawi-bg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[800px]">
+        <thead>
+          <tr class="bg-balawi-bg text-white border-b-2 border-balawi-bg">
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Commentaire</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Auteur</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Article</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y-2 divide-balawi-bg/10">
+          <tr *ngFor="let c of pagedComments" class="hover:bg-balawi-neon transition-colors group">
+            <td class="px-6 py-4 w-1/3">
+              <p class="text-xs font-slogan text-balawi-bg uppercase tracking-widest leading-relaxed">
+                "{{ c.content.length > 40 ? (c.content | slice:0:40) + '...' : c.content }}"
+              </p>
+              <div *ngIf="c.reported" class="inline-block mt-2 px-2 py-0.5 border-2 border-red-500 bg-white text-red-600 text-[8px] font-heading uppercase tracking-widest">
+                Signalé ({{ c.reportCount }})
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex flex-col">
+                <span class="font-heading text-xs text-balawi-bg uppercase">{{ c.authorFirstName }} {{ c.authorLastName }}</span>
+                <span class="text-[9px] font-slogan text-gray-500 uppercase">#{{ c.authorId }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <a *ngIf="c.itemId" [routerLink]="['/admin/items', c.itemId]" class="flex items-center gap-2 group/item">
+                <div class="w-10 h-10 border-2 border-balawi-bg bg-white overflow-hidden shrink-0">
+                   <img *ngIf="c.itemImageUrl" [src]="authService.toAbsoluteUrl(c.itemImageUrl)" class="w-full h-full object-cover grayscale group-hover/item:grayscale-0">
+                   <mat-icon *ngIf="!c.itemImageUrl" class="text-gray-300">image</mat-icon>
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-heading text-[10px] text-balawi-bg uppercase tracking-tight group-hover/item:underline underline-offset-4 decoration-balawi-bg">{{ c.itemTitle || 'Voir Article' }}</span>
+                  <span class="text-[8px] font-slogan text-balawi-bg/40 uppercase">#{{ c.itemId }}</span>
+                </div>
+              </a>
+              <span *ngIf="!c.itemId" class="text-[10px] font-slogan text-gray-400 uppercase italic">Supprimé</span>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-2">
+                <button (click)="reportComment(c.id)" [disabled]="c.reported" class="w-8 h-8 flex items-center justify-center bg-balawi-bg text-white hover:bg-black transition-colors disabled:opacity-20">
+                  <mat-icon class="!text-sm">report</mat-icon>
+                </button>
+                <button (click)="deleteComment(c.id)" class="w-8 h-8 flex items-center justify-center border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
+                  <mat-icon class="!text-sm">delete_outline</mat-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="flex flex-col items-center justify-center h-64">
+      <div class="w-12 h-12 bg-balawi-bg animate-bounce flex items-center justify-center">
+        <div class="w-6 h-6 bg-balawi-neon"></div>
+      </div>
+    </div>
+  </ng-template>
+
+  <div *ngIf="!isLoading() && comments().length > pageSize"
+    class="flex items-center justify-between px-6 py-4 border-t-2 border-balawi-bg bg-gray-50">
+    <span class="text-[10px] font-heading text-balawi-bg/40 uppercase tracking-widest">
+      {{ page() * pageSize + 1 }}–{{ (page() + 1) * pageSize < comments().length ? (page() + 1) * pageSize : comments().length }} / {{ comments().length }}
+    </span>
+    <div class="flex gap-1">
+      <button (click)="goToPage(page() - 1)" [disabled]="page() === 0"
+        class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+        <mat-icon class="!text-lg">chevron_left</mat-icon>
+      </button>
+      <button (click)="goToPage(page() + 1)" [disabled]="page() >= totalPages - 1"
+        class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+        <mat-icon class="!text-lg">chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

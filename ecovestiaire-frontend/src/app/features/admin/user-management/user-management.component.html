@@ -1,0 +1,87 @@
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <header class="border-l-4 border-balawi-neon pl-4">
+      <h1 class="text-3xl font-heading text-balawi-bg uppercase tracking-tight">Utilisateurs</h1>
+      <p class="text-[10px] font-slogan text-balawi-bg/70 mt-1 uppercase tracking-widest font-bold">Gestion & Modération</p>
+    </header>
+
+    <div class="relative w-full md:w-1/3">
+      <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 !text-xl">search</mat-icon>
+      <input type="text" [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value); page.set(0)" placeholder="Rechercher..."
+        class="w-full pl-10 pr-4 py-2 bg-white border-2 border-balawi-bg rounded-none outline-none focus:border-balawi-neon transition-all font-slogan text-sm text-balawi-bg uppercase tracking-wider">
+    </div>
+  </div>
+
+  <div class="bg-white border-2 border-balawi-bg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[800px]">
+        <thead>
+          <tr class="bg-balawi-bg text-white border-b-2 border-balawi-bg">
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Utilisateur</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Email</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest text-center">Statut</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y-2 divide-balawi-bg/10">
+          <tr *ngFor="let user of pagedUsers" class="hover:bg-balawi-neon transition-colors group">
+            <td class="px-6 py-4">
+              <span class="font-heading text-balawi-bg uppercase tracking-wide">{{ user.firstName }} {{ user.lastName }}</span>
+            </td>
+            <td class="px-6 py-4 text-xs font-slogan text-gray-600 uppercase tracking-widest">{{ user.email }}</td>
+            <td class="px-6 py-4 text-center">
+              <span [ngClass]="getStatusClass(user.status)" class="px-3 py-1 border-2 border-balawi-bg text-[10px] font-heading tracking-widest uppercase bg-white">
+                {{ user.status }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-2">
+                <button [matMenuTriggerFor]="statusMenu" class="w-8 h-8 flex items-center justify-center bg-balawi-bg text-white hover:bg-black transition-colors" title="Statut">
+                  <mat-icon class="!text-lg">verified_user</mat-icon>
+                </button>
+                <mat-menu #statusMenu="matMenu" class="brutalist-menu">
+                  <button mat-menu-item (click)="updateStatus(user, 'ACTIVE')">
+                    <mat-icon>check_circle</mat-icon> <span class="font-heading uppercase tracking-widest text-xs">Activer</span>
+                  </button>
+                  <button mat-menu-item (click)="updateStatus(user, 'SUSPENDED')">
+                    <mat-icon>block</mat-icon> <span class="font-heading uppercase tracking-widest text-xs">Suspendre</span>
+                  </button>
+                </mat-menu>
+
+                <button (click)="deleteUser(user.id)" class="w-8 h-8 flex items-center justify-center border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors" title="Supprimer">
+                  <mat-icon class="!text-lg">delete_outline</mat-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Brutalist -->
+    <div *ngIf="!isLoading() && filteredUsers.length > pageSize"
+      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 border-t-2 border-balawi-bg bg-gray-50">
+      <span class="text-[10px] font-heading text-balawi-bg/50 uppercase tracking-widest">
+        {{ page() * pageSize + 1 }}–{{ (page() + 1) * pageSize < filteredUsers.length ? (page() + 1) * pageSize : filteredUsers.length }} / {{ filteredUsers.length }}
+      </span>
+      <div class="flex items-center justify-center gap-1">
+        <button (click)="goToPage(page() - 1)" [disabled]="page() === 0"
+          class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+          <mat-icon class="!text-lg">chevron_left</mat-icon>
+        </button>
+        <ng-container *ngFor="let p of pagesArray">
+          <button (click)="goToPage(p)"
+            [class.bg-balawi-bg]="page() === p" [class.text-balawi-neon]="page() === p"
+            [class.bg-white]="page() !== p"
+            class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg font-heading text-xs transition-colors">
+            {{ p + 1 }}
+          </button>
+        </ng-container>
+        <button (click)="goToPage(page() + 1)" [disabled]="page() >= totalPages - 1"
+          class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+          <mat-icon class="!text-lg">chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

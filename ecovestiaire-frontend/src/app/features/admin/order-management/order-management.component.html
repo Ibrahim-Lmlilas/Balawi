@@ -1,0 +1,92 @@
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <header class="border-l-4 border-balawi-neon pl-4">
+      <h1 class="text-3xl font-heading text-balawi-bg uppercase tracking-tight">Commandes</h1>
+      <p class="text-[10px] font-slogan text-balawi-bg/70 mt-1 uppercase tracking-widest font-bold">Historique transactions</p>
+    </header>
+
+    <div class="flex flex-col md:flex-row gap-3">
+      <div class="relative w-full md:w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 !text-xl">search</mat-icon>
+        <input
+          type="text"
+          [value]="query()"
+          (input)="onQueryInput(($any($event.target)).value)"
+          placeholder="Rechercher..."
+          class="w-full pl-10 pr-4 py-2 bg-white border-2 border-balawi-bg rounded-none outline-none focus:border-balawi-neon transition-all font-slogan text-sm text-balawi-bg uppercase tracking-wider"
+        />
+      </div>
+      
+      <select [value]="sort()" (change)="onSortChange(($any($event.target)).value)" class="brutalist-select">
+        <option value="createdAt,desc">Plus récents</option>
+        <option value="createdAt,asc">Plus anciens</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="bg-white border-2 border-balawi-bg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[800px]">
+        <thead>
+          <tr class="bg-balawi-bg text-white border-b-2 border-balawi-bg">
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Article</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Client</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest">Montant</th>
+            <th class="px-6 py-4 text-[10px] font-heading uppercase tracking-widest text-center">Statut</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y-2 divide-balawi-bg/10">
+          <tr *ngFor="let order of pagedOrders" class="hover:bg-balawi-neon transition-colors group">
+            <td class="px-6 py-4">
+              <span class="font-heading text-xs text-balawi-bg uppercase tracking-wide truncate block max-w-[200px]">{{ order.itemTitle }}</span>
+              <span class="text-[9px] font-slogan text-gray-400 uppercase tracking-widest mt-1">#{{ order.id }}</span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-balawi-bg uppercase">{{ order.buyerName }}</span>
+                <span class="text-[9px] font-slogan text-gray-500 uppercase">Vers: {{ order.sellerName }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-lg font-heading tracking-wider text-balawi-bg">{{ order.amount | number:'1.0-0' }} <span class="text-xs">MAD</span></span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <select
+                [ngModel]="order.status"
+                (ngModelChange)="updateOrderStatus(order.id, $event)"
+                class="px-4 py-1.5 border-2 border-balawi-bg text-[10px] font-heading tracking-widest uppercase bg-white focus:bg-balawi-bg focus:text-balawi-neon outline-none cursor-pointer"
+              >
+                <option *ngFor="let s of availableStatuses" [value]="s">{{ getStatusLabel(s) }}</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="flex flex-col items-center justify-center h-64">
+      <div class="w-12 h-12 bg-balawi-bg animate-bounce flex items-center justify-center">
+        <div class="w-6 h-6 bg-balawi-neon"></div>
+      </div>
+    </div>
+  </ng-template>
+
+  <div *ngIf="!isLoading() && orders().length > pageSize"
+    class="flex items-center justify-between px-6 py-4 border-t-2 border-balawi-bg bg-gray-50">
+    <span class="text-[10px] font-heading text-balawi-bg/40 uppercase tracking-widest">
+      {{ page() * pageSize + 1 }}–{{ (page() + 1) * pageSize < orders().length ? (page() + 1) * pageSize : orders().length }} / {{ orders().length }}
+    </span>
+    <div class="flex gap-1">
+      <button (click)="goToPage(page() - 1)" [disabled]="page() === 0"
+        class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+        <mat-icon class="!text-lg">chevron_left</mat-icon>
+      </button>
+      <button (click)="goToPage(page() + 1)" [disabled]="page() >= totalPages - 1"
+        class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+        <mat-icon class="!text-lg">chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

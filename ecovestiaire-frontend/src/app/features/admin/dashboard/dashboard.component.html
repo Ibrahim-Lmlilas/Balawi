@@ -1,0 +1,80 @@
+<div class="space-y-8" *ngIf="!isLoading(); else loading">
+  <header class="flex items-center gap-4">
+    <div class="border-l-4 border-balawi-neon pl-4">
+      <h1 class="text-3xl font-heading text-balawi-bg uppercase tracking-tight">Dashboard</h1>
+      <p class="text-[10px] font-slogan text-balawi-bg/70 mt-1 uppercase tracking-widest font-bold">STREET STATS</p>
+    </div>
+  </header>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-2 border-balawi-bg" *ngIf="stats() as s">
+    <div class="bg-white p-6 border-b-2 sm:border-b-0 sm:border-r-2 border-balawi-bg flex items-center justify-between hover:bg-balawi-neon transition-colors group">
+      <div>
+        <p class="text-[10px] font-heading text-balawi-bg/40 uppercase tracking-widest leading-none">Users</p>
+        <h3 class="text-2xl font-heading tracking-wide text-balawi-bg mt-1">{{ s.totalActiveUsers | number }}</h3>
+      </div>
+      <div class="w-10 h-10 bg-balawi-bg text-balawi-neon flex items-center justify-center group-hover:bg-white transition-colors">
+        <mat-icon class="!text-xl">people</mat-icon>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 border-b-2 sm:border-b-0 sm:border-r-2 border-balawi-bg flex items-center justify-between hover:bg-balawi-neon transition-colors group">
+      <div>
+        <p class="text-[10px] font-heading text-balawi-bg/40 uppercase tracking-widest leading-none">Items</p>
+        <h3 class="text-2xl font-heading tracking-wide text-balawi-bg mt-1">{{ s.totalItems | number }}</h3>
+      </div>
+      <div class="w-10 h-10 bg-balawi-bg text-balawi-neon flex items-center justify-center group-hover:bg-white transition-colors">
+        <mat-icon class="!text-xl">inventory_2</mat-icon>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 border-b-2 sm:border-b-0 sm:border-r-2 border-balawi-bg flex items-center justify-between hover:bg-balawi-neon transition-colors group">
+      <div>
+        <p class="text-[10px] font-heading text-balawi-bg/40 uppercase tracking-widest leading-none">Orders</p>
+        <h3 class="text-2xl font-heading tracking-wide text-balawi-bg mt-1">{{ s.totalOrders | number }}</h3>
+      </div>
+      <div class="w-10 h-10 bg-balawi-bg text-balawi-neon flex items-center justify-center group-hover:bg-white transition-colors">
+        <mat-icon class="!text-xl">shopping_cart</mat-icon>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 flex items-center justify-between hover:bg-balawi-neon transition-colors group">
+      <div>
+        <p class="text-[10px] font-heading text-balawi-bg/40 uppercase tracking-widest leading-none">Revenue</p>
+        <h3 class="text-2xl font-heading tracking-wide text-balawi-bg mt-1">{{ s.totalRevenue | number:'1.0-0' }} <span class="text-sm">MAD</span></h3>
+      </div>
+      <div class="w-10 h-10 bg-balawi-bg text-balawi-neon flex items-center justify-center group-hover:bg-white transition-colors">
+        <mat-icon class="!text-xl">payments</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" *ngIf="stats() as s">
+    <div class="bg-white p-6 border-2 border-balawi-bg">
+      <h4 class="font-heading text-sm text-balawi-bg mb-6 uppercase tracking-widest border-b-2 border-balawi-bg/10 pb-2">
+        Inscriptions
+      </h4>
+      <div class="h-64">
+        <canvas baseChart [data]="getUsersData()" [options]="lineChartOptions" [type]="'line'"></canvas>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 border-2 border-balawi-bg">
+      <h4 class="font-heading text-sm text-balawi-bg mb-6 uppercase tracking-widest border-b-2 border-balawi-bg/10 pb-2">
+        Categories
+      </h4>
+      <div class="h-64">
+        <canvas baseChart [data]="getCategoriesData()" [options]="pieChartOptions" [type]="'pie'"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="flex flex-col items-center justify-center h-64">
+    <div class="w-12 h-12 bg-balawi-bg animate-bounce flex items-center justify-center">
+      <div class="w-6 h-6 bg-balawi-neon"></div>
+    </div>
+  </div>
+</ng-template>

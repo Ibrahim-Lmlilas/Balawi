@@ -1,0 +1,133 @@
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <header class="border-l-4 border-balawi-neon pl-4">
+      <h1 class="text-3xl font-heading text-balawi-bg uppercase tracking-tight">Catégories</h1>
+      <p class="text-[10px] font-slogan text-balawi-bg/70 mt-1 uppercase tracking-widest font-bold">Catalogue des types</p>
+    </header>
+
+    <div class="flex flex-col md:flex-row gap-3">
+      <div class="relative w-full md:w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 !text-xl">search</mat-icon>
+        <input
+          type="text"
+          [value]="query()"
+          (input)="onQueryInput(($any($event.target)).value)"
+          placeholder="Rechercher..."
+          class="w-full pl-10 pr-4 py-2 bg-white border-2 border-balawi-bg rounded-none outline-none focus:border-balawi-neon transition-all font-slogan text-sm text-balawi-bg uppercase tracking-wider"
+        />
+      </div>
+
+      <button (click)="openCreateForm()" class="flex items-center justify-center gap-2 px-4 py-2 bg-balawi-neon text-balawi-bg border-2 border-balawi-bg rounded-none font-heading uppercase tracking-widest hover:bg-white transition-all text-sm">
+        <mat-icon>add</mat-icon>
+        <span>Ajouter</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" *ngIf="!isLoading(); else loading">
+    <div *ngFor="let cat of pagedCategories" class="relative h-44 border-2 border-balawi-bg bg-white group hover:shadow-[8px_8px_0px_0px_#A3FF12] transition-all overflow-hidden">
+      <img *ngIf="cat.icon" [src]="toAbsoluteIconUrl(cat.icon)" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+      <div *ngIf="!cat.icon" class="absolute inset-0 bg-gray-100 flex items-center justify-center">
+        <mat-icon class="text-gray-300 scale-150">category</mat-icon>
+      </div>
+      <div class="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors"></div>
+      <div class="absolute inset-0 p-4 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <span class="text-[9px] font-heading text-white uppercase tracking-widest bg-balawi-bg px-2 py-0.5 border border-balawi-neon">#{{ cat.id }}</span>
+          <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button (click)="openEditForm(cat)" class="w-8 h-8 flex items-center justify-center bg-balawi-neon text-balawi-bg border-2 border-balawi-bg hover:bg-white transition-colors">
+              <mat-icon class="!text-sm">edit</mat-icon>
+            </button>
+            <button (click)="deleteCategory(cat.id)" class="w-8 h-8 flex items-center justify-center bg-red-500 text-white border-2 border-balawi-bg hover:bg-white hover:text-red-500 transition-colors">
+              <mat-icon class="!text-sm">delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-2xl font-heading uppercase text-white tracking-wide line-clamp-1 drop-shadow-lg">{{ cat.name }}</h3>
+          <p class="text-[9px] text-gray-300 font-slogan mt-1 line-clamp-2 uppercase leading-tight drop-shadow-md">{{ cat.description || 'N/A' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Modal Brutalist - FIXED BACKDROP AND CLOSING ON BG CLICK -->
+  <div *ngIf="showForm()" 
+       class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-0 md:p-4"
+       (click)="closeForm()">
+    <div class="bg-white border-4 border-balawi-bg w-full max-w-sm overflow-hidden animate-in fade-in zoom-in duration-200"
+         (click)="$event.stopPropagation()">
+      <div class="p-4 border-b-4 border-balawi-bg flex items-center justify-between bg-balawi-neon">
+        <h2 class="text-xl font-heading text-balawi-bg uppercase tracking-wide">{{ isEditing() ? 'Modifier' : 'Créer' }}</h2>
+        <button (click)="closeForm()" class="p-1 hover:bg-balawi-bg hover:text-white transition-colors">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="p-6 space-y-5">
+        <div>
+          <label class="block text-[9px] font-heading text-balawi-bg uppercase tracking-widest mb-1.5">Nom</label>
+          <input type="text" [(ngModel)]="currentCategory().name" required placeholder="T-SHIRTS"
+            class="w-full px-4 py-2 bg-white border-2 border-balawi-bg rounded-none outline-none focus:border-balawi-neon transition-all font-slogan text-xs uppercase">
+        </div>
+
+        <div class="flex flex-col items-center">
+          <label class="block text-[9px] font-heading text-balawi-bg uppercase tracking-widest mb-1.5 w-full text-left">Image</label>
+          <div class="w-full h-32 border-4 border-dashed border-balawi-bg/20 bg-gray-50 flex items-center justify-center cursor-pointer overflow-hidden hover:bg-balawi-neon hover:border-balawi-bg transition-all relative"
+               (click)="fileInput.click()">
+            <input type="file" accept="image/*" class="hidden" #fileInput (change)="onIconSelected($event)">
+            <img *ngIf="iconPreview()" [src]="toAbsoluteIconUrl(iconPreview())" class="w-full h-full object-cover">
+            <div *ngIf="!iconPreview()" class="flex flex-col items-center justify-center text-balawi-bg/40">
+              <mat-icon class="!text-2xl">add_photo_alternate</mat-icon>
+              <span class="text-[8px] font-heading mt-1 uppercase tracking-widest">Choisir l'image</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[9px] font-heading text-balawi-bg uppercase tracking-widest mb-1.5">Description</label>
+          <textarea [(ngModel)]="currentCategory().description" rows="2" placeholder="DETAILS..."
+            class="w-full px-4 py-2 bg-white border-2 border-balawi-bg rounded-none outline-none focus:border-balawi-neon transition-all font-slogan text-xs uppercase resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="p-4 bg-gray-50 flex gap-4 border-t-2 border-balawi-bg">
+        <button (click)="closeForm()" class="flex-1 py-2.5 border-2 border-balawi-bg text-balawi-bg font-heading uppercase tracking-widest text-[10px] hover:bg-gray-200 transition-all">
+          Annuler
+        </button>
+        <button (click)="saveCategory()" [disabled]="!currentCategory().name"
+          class="flex-1 py-2.5 bg-balawi-neon text-balawi-bg border-2 border-balawi-bg font-heading uppercase tracking-widest text-[10px] hover:bg-white transition-all disabled:opacity-30">
+          {{ isEditing() ? 'Update' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="flex flex-col items-center justify-center h-64">
+      <div class="brutalist-loader">
+        <div class="loader-box"></div>
+        <div class="loader-box"></div>
+        <div class="loader-box"></div>
+      </div>
+      <p class="text-[10px] font-heading uppercase tracking-[0.3em] text-balawi-bg mt-8 animate-pulse">Chargement...</p>
+    </div>
+  </ng-template>
+
+  <div *ngIf="!isLoading() && filteredCategories().length > pageSize"
+    class="flex items-center justify-between px-6 py-4 border-t-2 border-balawi-bg bg-gray-50 mt-6">
+    <span class="text-[10px] font-heading text-balawi-bg/40 uppercase tracking-widest">
+      {{ page() * pageSize + 1 }}–{{ (page() + 1) * pageSize < filteredCategories().length ? (page() + 1) * pageSize : filteredCategories().length }} / {{ filteredCategories().length }}
+    </span>
+    <div class="flex gap-1">
+      <button (click)="goToPage(page() - 1)" [disabled]="page() === 0"
+        class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+        <mat-icon class="!text-lg">chevron_left</mat-icon>
+      </button>
+      <button (click)="goToPage(page() + 1)" [disabled]="page() >= totalPages - 1"
+        class="w-8 h-8 flex items-center justify-center border-2 border-balawi-bg bg-white text-balawi-bg disabled:opacity-20 transition-colors">
+        <mat-icon class="!text-lg">chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
