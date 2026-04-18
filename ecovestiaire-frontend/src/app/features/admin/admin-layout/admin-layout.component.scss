@@ -1,0 +1,15 @@
+.nav-link {
+  @apply flex items-center gap-3 px-4 py-4 rounded-none text-balawi-bg transition-all font-heading uppercase tracking-widest border-b-2 border-balawi-bg/10;
+  
+  &:not(.active-link):hover {
+    @apply bg-balawi-bg text-balawi-neon;
+  }
+}
+
+.active-link {
+  @apply bg-balawi-bg text-balawi-neon font-bold border-l-8 border-white;
+  
+  &:hover {
+    @apply bg-black text-[#A3FF12];
+  }
+}

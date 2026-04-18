@@ -1,0 +1,116 @@
+<div class="max-w-5xl mx-auto p-4 space-y-8">
+  <!-- Back button -->
+  <header class="flex items-center justify-between">
+    <a routerLink="/admin/items" class="flex items-center gap-2 text-balawi-bg hover:text-balawi-neon transition-colors group border-b-2 border-balawi-bg">
+      <mat-icon class="group-hover:-translate-x-1 transition-transform !text-lg">arrow_back</mat-icon>
+      <span class="font-heading uppercase tracking-widest text-xs">Liste articles</span>
+    </a>
+    
+    <div class="flex gap-3" *ngIf="item() as it">
+      <button (click)="deleteItem()" class="flex items-center gap-2 px-4 py-2 bg-red-500 text-white border-2 border-balawi-bg hover:bg-black transition-colors font-heading text-xs uppercase tracking-widest">
+        <mat-icon class="!text-lg">delete</mat-icon>
+        Supprimer
+      </button>
+    </div>
+  </header>
+
+  <div *ngIf="isLoading()" class="py-20 text-center">
+    <div class="w-12 h-12 bg-balawi-bg animate-bounce mx-auto flex items-center justify-center">
+       <div class="w-6 h-6 bg-balawi-neon"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading() && item() as it" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Left: Gallery -->
+    <div class="space-y-4">
+      <div class="aspect-square border-4 border-balawi-bg bg-white relative group overflow-hidden">
+        <img [src]="currentPhoto()" class="w-full h-full object-cover" [alt]="it.title">
+        <div *ngIf="it.status === 'SOLD'" class="absolute top-4 right-4 bg-balawi-bg text-balawi-neon px-4 py-2 border-2 border-balawi-bg font-heading tracking-widest uppercase text-xs">
+          Vendu
+        </div>
+      </div>
+
+      <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <button *ngFor="let photo of it.photos; let i = index" 
+                (click)="selectPhoto(i)"
+                [class.border-balawi-neon]="photoIndex() === i"
+                class="w-16 h-16 border-2 border-balawi-bg shrink-0 transition-all hover:opacity-80">
+          <img [src]="photo" class="w-full h-full object-cover" [alt]="it.title">
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Info -->
+    <div class="space-y-6">
+      <section class="bg-white p-6 border-2 border-balawi-bg space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 bg-balawi-neon text-balawi-bg border-2 border-balawi-bg text-[9px] font-heading uppercase tracking-widest">
+              {{ it.category.name }}
+            </span>
+            <span class="text-balawi-bg/40 text-[9px] font-heading uppercase tracking-widest">#{{ it.id }}</span>
+          </div>
+          <span class="px-2 py-0.5 bg-balawi-bg text-white text-[9px] font-heading tracking-widest uppercase">
+            {{ it.status }}
+          </span>
+        </div>
+        
+        <h1 class="text-3xl font-heading text-balawi-bg uppercase tracking-tight">{{ it.title }}</h1>
+        <div class="text-4xl font-heading tracking-wider text-balawi-bg">{{ it.price | number:'1.0-0' }} <span class="text-xl">MAD</span></div>
+        
+        <div class="pt-2 border-t-2 border-balawi-bg/10">
+          <h3 class="text-[9px] font-heading text-balawi-bg/40 uppercase tracking-widest mb-2">Description</h3>
+          <p class="text-xs text-gray-600 font-slogan uppercase tracking-wider leading-relaxed">{{ it.description }}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <div class="p-3 border-2 border-balawi-bg bg-gray-50">
+            <div class="text-[8px] text-balawi-bg/40 uppercase font-heading tracking-widest mb-1">Taille</div>
+            <div class="text-xs font-heading text-balawi-bg uppercase">{{ it.size || 'N/A' }}</div>
+          </div>
+          <div class="p-3 border-2 border-balawi-bg bg-gray-50">
+            <div class="text-[8px] text-balawi-bg/40 uppercase font-heading tracking-widest mb-1">État</div>
+            <div class="text-xs font-heading text-balawi-bg uppercase">{{ it.conditionLabel || 'N/A' }}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="p-6 bg-white border-2 border-balawi-bg space-y-4">
+        <h2 class="text-[10px] font-heading uppercase tracking-widest text-balawi-bg flex items-center gap-2">
+          <mat-icon class="!text-lg">person</mat-icon>
+          Vendeur
+        </h2>
+        <div class="flex items-center gap-4 p-3 bg-balawi-neon border-2 border-balawi-bg">
+          <div class="w-10 h-10 border-2 border-balawi-bg bg-white flex items-center justify-center shrink-0 overflow-hidden">
+             <img *ngIf="it.seller.profilePhotoUrl" [src]="authService.toAbsoluteUrl(it.seller.profilePhotoUrl)" class="w-full h-full object-cover">
+             <span *ngIf="!it.seller.profilePhotoUrl" class="font-heading text-xs uppercase">{{ it.seller.firstName[0] }}</span>
+          </div>
+          <div>
+            <div class="font-heading text-xs text-balawi-bg uppercase">{{ it.seller.firstName }} {{ it.seller.lastName }}</div>
+            <div class="text-[8px] font-slogan text-balawi-bg/60 uppercase">Membre {{ it.createdAt | date:'MMM yyyy' }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comments -->
+      <section class="bg-white p-6 border-2 border-balawi-bg space-y-4">
+        <h2 class="text-[10px] font-heading uppercase tracking-widest text-balawi-bg flex items-center gap-2">
+          <mat-icon class="!text-lg">forum</mat-icon>
+          Feed ({{ comments().length }})
+        </h2>
+        
+        <div class="space-y-2 max-h-[200px] overflow-y-auto no-scrollbar">
+          <div *ngFor="let comment of comments()" class="p-3 border-b-2 border-balawi-bg/10 group hover:bg-balawi-neon transition-all">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-heading text-[10px] uppercase text-balawi-bg">{{ comment.authorFullName }}</span>
+              <button (click)="deleteComment(comment.id)" class="opacity-0 group-hover:opacity-100 text-red-500">
+                <mat-icon class="!text-sm">delete</mat-icon>
+              </button>
+            </div>
+            <p class="text-[10px] font-slogan text-gray-600 uppercase tracking-wider">{{ comment.content }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
