@@ -1,0 +1,88 @@
+<div class="min-h-screen bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <!-- HEADER -->
+    <div class="mb-12 border-b-[8px] border-balawi-bg pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div class="space-y-4">
+        <h1 class="text-3xl md:text-5xl font-heading text-balawi-bg uppercase tracking-tight leading-none">
+          MES <span class="text-balawi-neon bg-balawi-bg px-4">FAVORIS</span>
+        </h1>
+        <div class="w-32 h-3 bg-balawi-neon"></div>
+        <p class="font-slogan text-balawi-bg/60 text-xl uppercase tracking-widest" *ngIf="!isLoading()">
+          {{ favorites().length }} ARTICLES SAUVEGARDÉS
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div *ngFor="let i of [1,2,3,4,5,6]" class="border-4 border-balawi-bg p-4 h-[400px] flex flex-col gap-4 animate-pulse">
+        <div class="flex-1 bg-gray-100"></div>
+        <div class="h-6 bg-gray-100 w-3/4"></div>
+        <div class="h-6 bg-gray-100 w-1/2"></div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading() && favorites().length === 0"
+      class="border-8 border-dashed border-balawi-bg/20 py-32 px-8 text-center bg-gray-50">
+      <div class="w-24 h-24 bg-balawi-bg flex items-center justify-center mx-auto mb-8 shadow-[8px_8px_0px_0px_#A3FF12] relative">
+        <mat-icon class="text-balawi-neon !text-5xl !w-12 !h-12 flex items-center justify-center">favorite_border</mat-icon>
+      </div>
+      <h2 class="text-2xl font-heading text-balawi-bg mb-4 uppercase tracking-tight">VOTRE LISTE EST VIDE</h2>
+      <p class="font-slogan text-balawi-bg/60 text-lg mb-12 max-w-md mx-auto uppercase tracking-widest">
+        Dénichez vos prochaines pépites et ajoutez-les ici pour ne pas les perdre.
+      </p>
+      <button routerLink="/search"
+        class="px-12 py-5 bg-balawi-bg text-balawi-neon font-heading text-xl uppercase tracking-[0.2em] hover:bg-black transition-all shadow-[8px_8px_0px_0px_#A3FF12]">
+        EXPLORER LE SHOP
+      </button>
+    </div>
+
+    <!-- Favorites Grid (Using item-card style layout but custom for favorites) -->
+    <div *ngIf="!isLoading() && favorites().length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div *ngFor="let item of favorites()" 
+           class="group bg-white border-4 border-balawi-bg transition-all duration-300 hover:shadow-[12px_12px_0px_0px_#A3FF12] hover:-translate-y-2 flex flex-col h-full relative">
+        
+        <!-- REMOVE BUTTON (Top Right) -->
+        <button (click)="removeFavorite(item)"
+                class="absolute top-2 right-2 z-20 w-10 h-10 bg-white border-2 border-balawi-bg text-balawi-bg hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center shadow-[4px_4px_0px_0px_#0B0B0B]">
+          <mat-icon class="!text-lg">close</mat-icon>
+        </button>
+
+        <!-- IMAGE -->
+        <a [routerLink]="['/items', item.id]" class="aspect-square relative overflow-hidden bg-gray-50 shrink-0 border-b-4 border-balawi-bg">
+          <img [src]="(item.photos && item.photos.length ? item.photos[0] : 'assets/images/placeholder-item.svg')"
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" [alt]="item.title">
+          
+          <div *ngIf="item.status !== 'AVAILABLE'" 
+               class="absolute top-0 left-0 z-10 px-3 py-1 bg-balawi-bg text-balawi-neon font-heading text-[10px] uppercase tracking-widest border-b-4 border-r-4 border-balawi-bg">
+            {{ item.status === 'SOLD' ? 'Vendu' : (item.status === 'RESERVED' ? 'Réservé' : 'Masqué') }}
+          </div>
+        </a>
+
+        <!-- BODY -->
+        <div class="p-6 flex-1 flex flex-col gap-4">
+          <div class="shrink-0">
+             <a [routerLink]="['/items', item.id]">
+                <h3 class="font-heading text-xs uppercase tracking-tight text-balawi-bg truncate mb-2">{{ item.title }}</h3>
+             </a>
+             <div class="font-heading text-3xl tracking-tighter text-balawi-bg">{{ item.price }} MAD</div>
+          </div>
+
+          <div class="mt-auto flex flex-col gap-3">
+             <button *ngIf="item.status === 'AVAILABLE'" (click)="buyItem(item)"
+                     class="w-full py-3 bg-balawi-neon text-balawi-bg border-2 border-balawi-bg font-heading text-sm uppercase tracking-widest hover:bg-white transition-all shadow-[4px_4px_0px_0px_#0B0B0B]">
+               ACHETER
+             </button>
+             <button [routerLink]="['/items', item.id]"
+                     class="w-full py-3 bg-white border-2 border-balawi-bg text-balawi-bg font-heading text-sm uppercase tracking-widest hover:bg-balawi-bg hover:text-white transition-all">
+               VOIR L'ARTICLE
+             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
