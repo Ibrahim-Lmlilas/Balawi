@@ -1,0 +1,84 @@
+<div class="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- HEADER -->
+    <div class="mb-10 border-b-[6px] border-balawi-bg pb-6 flex items-end justify-between">
+      <div class="space-y-2">
+        <h1 class="text-3xl md:text-5xl font-heading text-balawi-bg uppercase tracking-tight leading-none italic">
+          RÉSULTATS <span class="text-balawi-neon bg-balawi-bg px-3">UTILISATEURS</span>
+        </h1>
+        <div class="w-32 h-2 bg-balawi-neon"></div>
+        <div class="font-heading text-xs text-balawi-bg/40 uppercase tracking-[0.2em] mt-4" *ngIf="query()">
+          RECHERCHE POUR: <span class="text-balawi-bg">&#64;{{query()}}</span>
+        </div>
+      </div>
+      <a routerLink="/" class="w-12 h-12 border-[4px] border-balawi-bg flex items-center justify-center hover:bg-balawi-neon transition-all shadow-[4px_4px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]">
+        <mat-icon>home</mat-icon>
+      </a>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div *ngIf="isLoading()" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div *ngFor="let _ of [1,2,3,4,5,6]" class="border-[4px] border-balawi-bg h-32 bg-gray-50 animate-pulse"></div>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div *ngIf="!isLoading() && errorMessage()" class="mt-8 border-[4px] border-balawi-bg bg-red-500 text-white p-8 font-heading text-xl uppercase tracking-widest">
+      {{errorMessage()}}
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="!isLoading() && !errorMessage() && users().length === 0" 
+         class="mt-8 border-[6px] border-dashed border-balawi-bg/10 p-20 text-center flex flex-col items-center gap-6">
+      <mat-icon class="!text-6xl text-balawi-bg/10">person_search</mat-icon>
+      <p class="font-heading text-xl text-balawi-bg/20 uppercase tracking-[0.2em] italic">AUCUN UTILISATEUR TROUVÉ</p>
+    </div>
+
+    <!-- CONTENT -->
+    <div *ngIf="!isLoading() && !errorMessage() && users().length > 0">
+      <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <a *ngFor="let u of users()" [routerLink]="['/users', u.id]" 
+           class="group bg-white border-[4px] border-balawi-bg p-6 hover:shadow-[12px_12px_0px_0px_#A3FF12] transition-all flex items-center gap-6 relative">
+          
+          <div class="w-16 h-16 border-[4px] border-balawi-bg bg-balawi-neon overflow-hidden shrink-0 transition-transform group-hover:-rotate-6 relative">
+            <img *ngIf="u.profilePhotoUrl; else userAvatar" [src]="u.profilePhotoUrl" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+            <ng-template #userAvatar>
+              <mat-icon class="!text-3xl text-balawi-bg flex items-center justify-center h-full">person</mat-icon>
+            </ng-template>
+            <div class="absolute inset-0 border-2 border-balawi-bg/10 pointer-events-none"></div>
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <div class="text-xl font-heading text-balawi-bg uppercase tracking-tight truncate italic group-hover:text-balawi-neon transition-colors">
+              {{u.firstName}} {{u.lastName}}
+            </div>
+            <div class="text-[9px] font-heading text-balawi-bg/40 uppercase tracking-[0.2em] truncate mt-1 flex items-center gap-1" *ngIf="u.location">
+              <mat-icon class="!text-[10px] h-auto w-auto">location_on</mat-icon>
+              {{u.location}}
+            </div>
+          </div>
+
+          <div class="absolute -z-10 top-1.5 left-1.5 w-full h-full bg-balawi-bg group-hover:hidden transition-all opacity-5"></div>
+        </a>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="mt-16 flex items-center justify-center gap-8 pt-12 border-t-[4px] border-balawi-bg">
+        <button (click)="prevPage()" [disabled]="page() === 0" 
+                class="w-14 h-14 border-[4px] border-balawi-bg bg-white text-balawi-bg hover:bg-balawi-neon disabled:opacity-20 transition-all shadow-[6px_6px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] flex items-center justify-center">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <div class="px-8 py-3 bg-balawi-bg text-balawi-neon font-heading text-base italic uppercase tracking-widest">
+          PAGE {{pageLabel()}} / {{totalPages()}}
+        </div>
+
+        <button (click)="nextPage()" [disabled]="page() >= totalPages() - 1" 
+                class="w-14 h-14 border-[4px] border-balawi-bg bg-white text-balawi-bg hover:bg-balawi-neon disabled:opacity-20 transition-all shadow-[6px_6px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] flex items-center justify-center">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

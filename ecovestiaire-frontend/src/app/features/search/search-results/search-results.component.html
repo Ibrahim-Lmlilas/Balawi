@@ -1,0 +1,123 @@
+<div class="min-h-screen bg-white">
+  <!-- Header / Search Banner -->
+  <div class="bg-balawi-neon border-b-4 border-balawi-bg py-12">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <header class="border-l-8 border-balawi-bg pl-6">
+        <h1 class="text-5xl font-heading text-balawi-bg uppercase tracking-tight">Explorer</h1>
+        <p class="text-sm font-slogan text-balawi-bg mt-2 uppercase tracking-[0.2em] font-bold">
+          {{ allItems().length }} Articles trouvés {{ query() ? 'pour "' + query() + '"' : '' }}
+        </p>
+      </header>
+    </div>
+  </div>
+
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex flex-col lg:flex-row gap-12">
+      
+      <!-- Sidebar Filters (Brutalist) -->
+      <aside class="w-full lg:w-72 flex-shrink-0">
+        <div class="sticky top-24 space-y-10">
+          <div class="flex items-center justify-between pb-4 border-b-4 border-balawi-bg">
+            <h2 class="text-2xl font-heading text-balawi-bg uppercase tracking-wide flex items-center gap-2">
+              <mat-icon>tune</mat-icon> Filtres
+            </h2>
+            <button (click)="onCategoryChange(null); minPrice = null; maxPrice = null; onPriceChange()" 
+                    class="text-[10px] font-heading bg-balawi-bg text-white px-3 py-1 hover:bg-black transition-all uppercase tracking-widest">
+              Reset
+            </button>
+          </div>
+          
+          <!-- Category Section -->
+          <div class="space-y-6">
+            <h3 class="font-heading text-balawi-bg text-sm uppercase tracking-widest">Catégories</h3>
+            <div class="flex flex-wrap gap-2">
+              <button 
+                (click)="onCategoryChange(null)"
+                [class.bg-balawi-bg]="selectedCategoryId() === null"
+                [class.text-white]="selectedCategoryId() === null"
+                class="px-4 py-2 border-2 border-balawi-bg font-heading text-[10px] uppercase tracking-widest hover:bg-balawi-neon transition-all">
+                Tout
+              </button>
+              <button 
+                *ngFor="let cat of categories()"
+                (click)="onCategoryChange(cat.id)"
+                [class.bg-balawi-bg]="selectedCategoryId() === cat.id"
+                [class.text-white]="selectedCategoryId() === cat.id"
+                class="px-4 py-2 border-2 border-balawi-bg font-heading text-[10px] uppercase tracking-widest hover:bg-balawi-neon transition-all">
+                {{ cat.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Price Section -->
+          <div class="space-y-6">
+            <h3 class="font-heading text-balawi-bg text-sm uppercase tracking-widest">Budget (MAD)</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <span class="text-[9px] font-heading uppercase text-balawi-bg/40">Min</span>
+                <input type="number" [(ngModel)]="minPrice" (input)="onPriceChange()"
+                       class="w-full px-3 py-2 bg-white border-2 border-balawi-bg font-slogan text-xs uppercase focus:border-balawi-neon outline-none">
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="text-[9px] font-heading uppercase text-balawi-bg/40">Max</span>
+                <input type="number" [(ngModel)]="maxPrice" (input)="onPriceChange()"
+                       class="w-full px-3 py-2 bg-white border-2 border-balawi-bg font-slogan text-xs uppercase focus:border-balawi-neon outline-none">
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1">
+        <!-- Loading State -->
+        <div *ngIf="isLoading()" class="flex flex-col items-center justify-center py-20">
+          <div class="brutalist-loader">
+            <div class="loader-box"></div>
+            <div class="loader-box"></div>
+            <div class="loader-box"></div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading() && allItems().length === 0" class="border-4 border-balawi-bg p-16 text-center bg-gray-50">
+          <mat-icon class="!text-6xl h-auto w-auto mb-6 text-balawi-bg/20">sentiment_very_dissatisfied</mat-icon>
+          <h3 class="text-3xl font-heading text-balawi-bg uppercase">Walou, makayn walo</h3>
+          <p class="text-xs font-slogan text-balawi-bg/60 mt-2 uppercase tracking-widest">Aucun article ne correspond à votre recherche.</p>
+          <button (click)="onCategoryChange(null)" class="mt-8 px-8 py-3 bg-balawi-bg text-white font-heading uppercase tracking-[0.2em] hover:bg-balawi-neon hover:text-balawi-bg transition-all">
+            Tout Explorer
+          </button>
+        </div>
+
+        <!-- Items Grid (Consistent sizing via aspect-ratio in CSS) -->
+        <div *ngIf="!isLoading() && allItems().length > 0">
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
+            <div *ngFor="let it of pagedItems()" class="h-full">
+              <app-item-card [item]="it" class="h-full block"></app-item-card>
+            </div>
+          </div>
+
+          <!-- Pagination (Brutalist) -->
+          <div class="mt-20 flex flex-col sm:flex-row items-center justify-center gap-6 border-t-4 border-balawi-bg pt-12">
+            <button (click)="prevPage()" [disabled]="page() === 1" 
+                    class="flex items-center gap-4 px-10 py-3 bg-balawi-bg text-white font-heading text-sm uppercase tracking-widest hover:bg-balawi-neon hover:text-balawi-bg transition-all disabled:opacity-20 disabled:grayscale">
+              <mat-icon>arrow_back</mat-icon> Précédent
+            </button>
+
+            <div class="flex items-center gap-4 px-8 py-3 border-2 border-balawi-bg bg-white">
+              <span class="text-[10px] font-heading text-balawi-bg/40 uppercase">Page</span>
+              <span class="text-xl font-heading text-balawi-bg">
+                {{ page() }} / {{ totalPages() }}
+              </span>
+            </div>
+
+            <button (click)="nextPage()" [disabled]="page() === totalPages()" 
+                    class="flex items-center gap-4 px-10 py-3 bg-balawi-bg text-white font-heading text-sm uppercase tracking-widest hover:bg-balawi-neon hover:text-balawi-bg transition-all disabled:opacity-20 disabled:grayscale">
+              Suivant <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
