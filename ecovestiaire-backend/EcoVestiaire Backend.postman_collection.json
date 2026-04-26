@@ -1,0 +1,1511 @@
+{
+  "info": {
+    "_postman_id": "ba45bbfa-69ec-4334-a9d8-b8aa4430931b",
+    "name": "EcoVestiaire Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31646156",
+    "_collection_link": "https://go.postman.co/collection/31646156-ba45bbfa-69ec-4334-a9d8-b8aa4430931b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "User Registration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Salma\",\r\n  \"lastName\": \"Hamdi\",\r\n  \"email\": \"salma@example.com\",\r\n  \"password\": \"salma@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"salma@example.com\",\r\n  \"password\": \"salma@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3Njg3MzQ2MzMsImV4cCI6MTc2ODczODIzM30.I1B_fPXchYTGHVBkg4EeEmlMgh2nTxtMupAmcOs7vI0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Current User Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3Njg3MzQ2MzMsImV4cCI6MTc2ODczODIzM30.I1B_fPXchYTGHVBkg4EeEmlMgh2nTxtMupAmcOs7vI0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Salma\",\r\n  \"lastName\": \"Hamdi\",\r\n  \"bio\": \"Passionnée de mode éco-responsable\",\r\n  \"location\": \"Casablanca\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Public User Profile",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Follow User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3NjkxOTA5NTEsImV4cCI6MTc2OTE5NDU1MX0.LfqSXjnsxk4bDmxcSGpIEWX6Jaug2yYUUaml9SGw0Xk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/3/follow",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "3",
+                "follow"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Followers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/3/followers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "3",
+                "followers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Following",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/1/following",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "1",
+                "following"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unfollow User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3NjkxOTA5NTEsImV4cCI6MTc2OTE5NDU1MX0.LfqSXjnsxk4bDmxcSGpIEWX6Jaug2yYUUaml9SGw0Xk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/3/follow",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "3",
+                "follow"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "search user",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Public – List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Update Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MDkxNDA5LCJleHAiOjE3NjkwOTUwMDl9.SIIZ1sI9E9lPNPDyc-UroTZDveB5Z2oTdX2aGC0Dwss",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Robes & Jupes\",\r\n  \"description\": \"Robes et jupes d'occasion pour femmes\",\r\n  \"icon\": \"dress\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/categories/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "categories",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MDkxNDA5LCJleHAiOjE3NjkwOTUwMDl9.SIIZ1sI9E9lPNPDyc-UroTZDveB5Z2oTdX2aGC0Dwss",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Robes\",\r\n  \"description\": \"Robes d'occasion pour femmes\",\r\n  \"icon\": \"dress\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MDkxNDA5LCJleHAiOjE3NjkwOTUwMDl9.SIIZ1sI9E9lPNPDyc-UroTZDveB5Z2oTdX2aGC0Dwss",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/admin/categories/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "categories",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "item": [
+        {
+          "name": "Create Item",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3NjkwOTUyOTUsImV4cCI6MTc2OTA5ODg5NX0.DrnPuL_FIKKVDz3GzSQ6jmI_QCbOdBFMn-dBVniA3Zg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "photos",
+                  "type": "file",
+                  "uuid": "70a14105-90fb-4a3b-8f47-253a86371e52",
+                  "src": "/C:/Users/youco/Desktop/robe2.jpg"
+                },
+                {
+                  "key": "photos",
+                  "type": "file",
+                  "uuid": "916a335f-15a2-438d-b696-2ddf5f0544ff",
+                  "src": "/C:/Users/youco/Desktop/robe3.jpg"
+                },
+                {
+                  "key": "title",
+                  "value": "Robe d'été fleurie",
+                  "type": "text",
+                  "uuid": "bfe8424d-1132-43e5-a9c1-44399d6525cd",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "Robe d'été en coton, taille 38, très peu portée.",
+                  "type": "text",
+                  "uuid": "8a22b00e-9516-4267-8d16-fbb94ea88150",
+                  "disabled": true
+                },
+                {
+                  "key": "price",
+                  "value": "29.99",
+                  "type": "text",
+                  "uuid": "bf0b5817-4205-41c2-be40-d3c0a1eee7e4",
+                  "disabled": true
+                },
+                {
+                  "key": "size",
+                  "value": "38",
+                  "type": "text",
+                  "uuid": "75c48fbc-1704-4efa-af12-899555f40ade",
+                  "disabled": true
+                },
+                {
+                  "key": "conditionLabel",
+                  "value": "Très bon état",
+                  "type": "text",
+                  "uuid": "a4ed7325-e76a-414a-9835-695054a52a2f",
+                  "disabled": true
+                },
+                {
+                  "key": "categoryId",
+                  "value": "2",
+                  "type": "text",
+                  "uuid": "09b8cd1e-8ece-4163-9b6a-f370b8726b31",
+                  "disabled": true
+                },
+                {
+                  "key": "data",
+                  "value": "{\n  \"title\": \"Robe d'été fleurie\",\n  \"description\": \"Robe d'été en coton, taille 38, très peu portée.\",\n  \"price\": 29.99,\n  \"size\": \"38\",\n  \"conditionLabel\": \"Très bon état\",\n  \"categoryId\": 2\n}",
+                  "type": "text",
+                  "uuid": "57994209-44ce-421c-9909-6e4337e2f4ca"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/items",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Item",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Search Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/items?categoryId =2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "items"
+              ],
+              "query": [
+                {
+                  "key": "categoryId ",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE1OTAyOSwiZXhwIjoxNzY5MTYyNjI5fQ.y1XhgYbg_OGb5TT3ukFZSGdoqdVuqNgMTWlOZAM0Adg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"itemId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE1OTAyOSwiZXhwIjoxNzY5MTYyNjI5fQ.y1XhgYbg_OGb5TT3ukFZSGdoqdVuqNgMTWlOZAM0Adg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/orders/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "orders",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Purchases",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE4NDI0MywiZXhwIjoxNzY5MTg3ODQzfQ.2H4WRE3MbfTSxBq5sKblEeGCwC2vUhFwnEIHzWMu5as",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/orders/my-purchases?page=0&size=10&sortDir=DESC",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "orders",
+                "my-purchases"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sortDir",
+                  "value": "DESC"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Sales",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3NjkxODUxMTAsImV4cCI6MTc2OTE4ODcxMH0.JJaZWtmWUcmlk0U-ypzJe1hRL9fV0U12txgf4GaivHM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/orders/my-sales?page=0&size=10&sortDir=DESC",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "orders",
+                "my-sales"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sortDir",
+                  "value": "DESC"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE2NjAyOSwiZXhwIjoxNzY5MTY5NjI5fQ.AUXVVZd7QJCWgNej_Yw8qGF_dpU_mBpBNmJZUd0lZC4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"orderId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/payments/create-checkout-session",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "payments",
+                "create-checkout-session"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Favoris",
+      "item": [
+        {
+          "name": "Liker un article",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE5MzQzOCwiZXhwIjoxNzY5MTk3MDM4fQ.76D94J2UYq0V-v65vGkaDzYb8vHRw5gkVEKq-iAjF50",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/items/1/favorite",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "items",
+                "1",
+                "favorite"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Voir mes favoris",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE5MzQzOCwiZXhwIjoxNzY5MTk3MDM4fQ.76D94J2UYq0V-v65vGkaDzYb8vHRw5gkVEKq-iAjF50",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/me/favorites",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "me",
+                "favorites"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retirer des favoris",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE5MzQzOCwiZXhwIjoxNzY5MTk3MDM4fQ.76D94J2UYq0V-v65vGkaDzYb8vHRw5gkVEKq-iAjF50",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/items/1/favorite",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "items",
+                "1",
+                "favorite"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Commentaires",
+      "item": [
+        {
+          "name": "Create a comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE5NDY1MCwiZXhwIjoxNzY5MTk4MjUwfQ.IjUYMA_yH2TU_iNXvcY5fc6YpP1dctd3zd1BYJU7W14",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"content\": \"Super article, très bonne qualité !\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/items/1/comments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "items",
+                "1",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List the comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/items/1/comments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "items",
+                "1",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTE5NDY1MCwiZXhwIjoxNzY5MTk4MjUwfQ.IjUYMA_yH2TU_iNXvcY5fc6YpP1dctd3zd1BYJU7W14",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/comments/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "comments",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Lister mes notifications (sans markAsRead)",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Lister mes notifications (markAsRead=true)",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin - Users",
+      "item": [
+        {
+          "name": "Lister les utilisateurs (tous)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MTk5Nzg1LCJleHAiOjE3NjkyMDMzODV9.zEXfhHtk8oecWL8YGnEgq79Hz7OAaF_bKkfgIXsPEbw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/admin/users?search=&page=0&size=20",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lister les utilisateurs par email",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MTk5Nzg1LCJleHAiOjE3NjkyMDMzODV9.zEXfhHtk8oecWL8YGnEgq79Hz7OAaF_bKkfgIXsPEbw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/admin/users?search=malika&status=&page=0&size=20",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "malika"
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lister les utilisateurs par statut",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MTk5Nzg1LCJleHAiOjE3NjkyMDMzODV9.zEXfhHtk8oecWL8YGnEgq79Hz7OAaF_bKkfgIXsPEbw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/admin/users?search=&status=SUSPENDED&page=0&size=20",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": "SUSPENDED"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Changer le statut d’un utilisateur",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MTk5Nzg1LCJleHAiOjE3NjkyMDMzODV9.zEXfhHtk8oecWL8YGnEgq79Hz7OAaF_bKkfgIXsPEbw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"SUSPENDED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/users/3/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users",
+                "3",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer logiquement un utilisateur",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MTk5Nzg1LCJleHAiOjE3NjkyMDMzODV9.zEXfhHtk8oecWL8YGnEgq79Hz7OAaF_bKkfgIXsPEbw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/admin/users/4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin - Modération",
+      "item": [
+        {
+          "name": "Supprimer un article (admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MjAyMTc0LCJleHAiOjE3NjkyMDU3NzR9.FV3xESjf9SvdgEoYCVpI4VSZfN2H3wivheDuYXXeXk0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/admin/items/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "items",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un commentaire (admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbWluQGFkbWluLmNvbSIsInJvbGUiOiJBRE1JTiIsInVzZXJJZCI6MiwiaWF0IjoxNzY5MjAyMTc0LCJleHAiOjE3NjkyMDU3NzR9.FV3xESjf9SvdgEoYCVpI4VSZfN2H3wivheDuYXXeXk0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/admin/comments/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "comments",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin - Statistiques",
+      "item": [
+        {
+          "name": "Statistiques du dashboard",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Conversations",
+      "item": [
+        {
+          "name": "Créer ou récupérer une conversation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTI4ODk4OCwiZXhwIjoxNzY5MjkyNTg4fQ.I9qAk9JTBzNui4be-T6inblwbVy1S5KXNKzWwNRKcf4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"targetUserId\": 1,\r\n  \"itemId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/conversations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "conversations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lister mes conversations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTI4ODk4OCwiZXhwIjoxNzY5MjkyNTg4fQ.I9qAk9JTBzNui4be-T6inblwbVy1S5KXNKzWwNRKcf4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/conversations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "conversations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Détail d’une conversation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTI4ODk4OCwiZXhwIjoxNzY5MjkyNTg4fQ.I9qAk9JTBzNui4be-T6inblwbVy1S5KXNKzWwNRKcf4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/conversations/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "conversations",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Envoyer un message (User 1)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWxpa2FAYWRtaW4uY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjMsImlhdCI6MTc2OTI4ODk4OCwiZXhwIjoxNzY5MjkyNTg4fQ.I9qAk9JTBzNui4be-T6inblwbVy1S5KXNKzWwNRKcf4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"content\": \"Bonjour, votre article est-il toujours disponible ?\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/conversations/1/messages",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "conversations",
+                "1",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Envoyer un message (User 2)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3NjkyODkyNzAsImV4cCI6MTc2OTI5Mjg3MH0.by2EefcPs-Rw4HYj_uMujdaYgzwoaINHGb6L-q29JzA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"content\": \"Oui, il est toujours disponible.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/conversations/1/messages",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "conversations",
+                "1",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Historique des messages",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWxtYUBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoxLCJpYXQiOjE3NjkyODkyNzAsImV4cCI6MTc2OTI5Mjg3MH0.by2EefcPs-Rw4HYj_uMujdaYgzwoaINHGb6L-q29JzA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/conversations/1/messages?page=0&size=20",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "conversations",
+                "1",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+<div class="icard flex flex-col h-full bg-white border-4 border-balawi-bg transition-all duration-300 hover:shadow-[12px_12px_0px_0px_#A3FF12] hover:-translate-y-2 group" [routerLink]="['/items', item.id]">
+
+  <!-- TITRE EN HAUT -->
+  <div class="icard__header flex items-center justify-between gap-2 px-4 py-3 shrink-0 h-14 border-b-4 border-balawi-bg bg-white">
+    <h3 class="icard__title flex-1 truncate font-heading text-xs uppercase tracking-tight text-balawi-bg">{{ item.title }}</h3>
+    
+    <!-- Menu 3 points -->
+    <div *ngIf="showActions" class="icard__actions">
+      <button mat-icon-button [matMenuTriggerFor]="actionMenu" (click)="$event.stopPropagation()" class="w-8 h-8 flex items-center justify-center hover:bg-balawi-neon transition-colors">
+        <mat-icon class="!text-lg">more_vert</mat-icon>
+      </button>
+      <mat-menu #actionMenu="matMenu" xPosition="before" class="brutalist-menu">
+        <button mat-menu-item (click)="editItem($event)">
+          <mat-icon>edit</mat-icon>
+          <span>Modifier</span>
+        </button>
+        <button mat-menu-item (click)="deleteItem($event)" class="text-red-500">
+          <mat-icon class="text-red-500">delete_outline</mat-icon>
+          <span>Supprimer</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <!-- IMAGE - CONSISTENT ASPECT RATIO -->
+  <div class="icard__img-wrap aspect-square relative overflow-hidden shrink-0 bg-gray-100">
+    <img [src]="currentPhoto" [alt]="item.title" class="icard__img w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+
+    <!-- Status badge top left -->
+    <div *ngIf="item.status !== 'AVAILABLE'" class="absolute top-0 left-0 z-10 px-3 py-1 font-heading text-[10px] uppercase tracking-widest border-b-4 border-r-4 border-balawi-bg"
+      [ngClass]="{
+        'bg-balawi-neon text-balawi-bg': item.status === 'SOLD',
+        'bg-white text-balawi-bg': item.status === 'RESERVED',
+        'bg-gray-400 text-white': item.status === 'HIDDEN'
+      }">
+      {{ item.status === 'SOLD' ? 'Vendu' : item.status === 'RESERVED' ? 'Réservé' : 'Masqué' }}
+    </div>
+
+    <!-- Nav photos (Hidden by default, shown on hover) -->
+    <div class="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button *ngIf="(item.photos?.length || 0) > 1" (click)="prevPhoto($event)" class="w-8 h-8 bg-balawi-neon border-2 border-balawi-bg flex items-center justify-center hover:bg-white transition-colors">
+        <mat-icon class="!text-sm">chevron_left</mat-icon>
+      </button>
+      <button *ngIf="(item.photos?.length || 0) > 1" (click)="nextPhoto($event)" class="w-8 h-8 bg-balawi-neon border-2 border-balawi-bg flex items-center justify-center hover:bg-white transition-colors">
+        <mat-icon class="!text-sm">chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- BODY - FILL REMAINING SPACE -->
+  <div class="icard__body flex-1 p-4 flex flex-col gap-4 bg-white border-t-4 border-balawi-bg">
+
+    <!-- Prix -->
+    <div class="shrink-0">
+      <span class="font-heading text-3xl tracking-tighter text-balawi-bg">{{ item.price }} <span class="text-xs">MAD</span></span>
+    </div>
+
+    <!-- Taille + État -->
+    <div class="flex flex-wrap gap-2 shrink-0">
+      <span class="px-3 py-1 border-2 border-balawi-bg font-heading text-[10px] uppercase tracking-widest bg-white">{{ item.size || 'N/A' }}</span>
+      <span *ngIf="item.conditionLabel" class="px-3 py-1 border-2 border-balawi-bg bg-balawi-neon font-heading text-[10px] uppercase tracking-widest truncate max-w-[140px]">{{ item.conditionLabel }}</span>
+    </div>
+ 
+    <!-- Vendeur + Like -->
+    <div class="mt-auto pt-4 border-t-2 border-balawi-bg/10 flex items-center justify-between gap-4">
+      <div *ngIf="!hideSeller" class="flex items-center gap-2 min-w-0">
+        <div class="w-8 h-8 border-2 border-balawi-bg shrink-0 overflow-hidden bg-balawi-neon flex items-center justify-center">
+          <img *ngIf="authService.hasPhoto(item.seller.profilePhotoUrl); else cardDefaultAvatar" 
+               [src]="authService.toAbsoluteUrl(item.seller.profilePhotoUrl)" class="h-full w-full object-cover">
+          <ng-template #cardDefaultAvatar>
+            <mat-icon class="text-balawi-bg !text-sm !flex !items-center !justify-center">person</mat-icon>
+          </ng-template>
+        </div>
+        <span class="text-[10px] font-heading uppercase tracking-wider truncate text-balawi-bg">{{ item.seller.firstName }}</span>
+      </div>
+      
+      <button (click)="toggleFavorite($event)" 
+              class="w-10 h-8 flex items-center justify-center border-2 border-balawi-bg transition-all group/like"
+              [class.bg-balawi-bg]="item.isFavorite" [class.text-balawi-neon]="item.isFavorite"
+              [class.bg-white]="!item.isFavorite" [class.text-balawi-bg]="!item.isFavorite">
+        <mat-icon class="!text-lg !flex !items-center !justify-center transition-transform group-hover/like:scale-125">
+          {{ item.isFavorite ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+        <span *ngIf="item.likesCount" class="text-[10px] font-heading ml-1">{{ item.likesCount }}</span>
+      </button>
+    </div>
+
+  </div>
+</div>

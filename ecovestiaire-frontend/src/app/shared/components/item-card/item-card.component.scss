@@ -1,0 +1,227 @@
+.icard {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 0; // Sharp edges
+  overflow: hidden;
+  cursor: pointer;
+  border: 4px solid #0B0B0B; // Thick border
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 6px 6px 0px 0px #0B0B0B;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0px 0px #A3FF12;
+    border-color: #0B0B0B;
+  }
+
+  // ── Header (Title) ──────────────────────────
+  &__header {
+    padding: 16px 16px 8px;
+    background: #fff;
+  }
+
+  &__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: #0B0B0B;
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // ── Image Wrap ──────────────────────────────
+  &__img-wrap {
+    position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #0B0B0B;
+    margin: 0;
+    border-radius: 0;
+    border-top: 4px solid #0B0B0B;
+    border-bottom: 4px solid #0B0B0B;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.2) contrast(1.1);
+    transition: transform 0.5s ease;
+
+    .icard:hover & {
+      transform: scale(1.05);
+      filter: grayscale(0) contrast(1.1);
+    }
+  }
+
+  // ── Status Badges ──────────────────────────
+  &__badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'Anton', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    padding: 6px 12px;
+    z-index: 3;
+    text-transform: uppercase;
+    border-right: 4px solid #0B0B0B;
+    border-bottom: 4px solid #0B0B0B;
+
+    &--sold {
+      background: #A3FF12;
+      color: #0B0B0B;
+    }
+
+    &--reserved {
+      background: #fff;
+      color: #0B0B0B;
+    }
+
+    &--hidden {
+      background: #64748b;
+      color: #fff;
+    }
+  }
+
+  // ── Navigation ─────────────────────────────
+  &__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 0;
+    background: #A3FF12;
+    border: 3px solid #0B0B0B;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0B0B0B;
+    opacity: 0;
+    transition: all 0.2s;
+    z-index: 3;
+
+    .icard:hover & {
+      opacity: 1;
+    }
+
+    &--prev { left: 0; }
+    &--next { right: 0; }
+
+    &:hover {
+      background: #fff;
+    }
+  }
+
+  // ── Body ───────────────────────────────────
+  &__body {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #fff;
+  }
+
+  &__price {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px;
+    color: #0B0B0B;
+    letter-spacing: 0.02em;
+  }
+
+  // ── Tags ───────────────────────────────────
+  &__tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border: 2px solid #0B0B0B;
+    border-radius: 0;
+
+    &--size {
+      background: #fff;
+      color: #0B0B0B;
+    }
+
+    &--cond {
+      background: #A3FF12;
+      color: #0B0B0B;
+    }
+  }
+
+  // ── Footer ─────────────────────────────────
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 2px solid #0B0B0B;
+  }
+
+  &__seller {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0B0B0B;
+    text-transform: uppercase;
+  }
+
+  &__seller-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 0;
+    border: 2px solid #0B0B0B;
+    background: #A3FF12;
+    overflow: hidden;
+  }
+
+  &__like {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 2px solid #0B0B0B;
+    cursor: pointer;
+    color: #0B0B0B;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 2px 6px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #A3FF12;
+    }
+
+    &--on {
+      background: #0B0B0B !important;
+      color: #A3FF12 !important;
+    }
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

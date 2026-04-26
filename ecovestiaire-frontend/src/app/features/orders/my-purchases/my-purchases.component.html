@@ -1,0 +1,131 @@
+<div class="min-h-screen bg-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- HEADER -->
+    <div class="mb-8 border-b-[4px] border-balawi-bg pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div class="space-y-1.5">
+        <h1 class="text-2xl md:text-3xl font-heading text-balawi-bg uppercase tracking-tight leading-none italic font-black">
+          MES <span class="text-balawi-neon bg-balawi-bg px-2">ACHATS</span>
+        </h1>
+        <div class="w-24 h-1.5 bg-balawi-neon"></div>
+        <p class="font-slogan text-[10px] text-balawi-bg/50 uppercase tracking-widest mt-3 italic font-bold">Historique de vos trésors dénichés</p>
+      </div>
+      
+      <button routerLink="/" class="group flex items-center gap-2 bg-balawi-bg text-balawi-neon px-4 py-1.5 font-heading text-xs uppercase tracking-widest hover:bg-black transition-all shadow-[3px_3px_0px_0px_#A3FF12] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] italic font-bold">
+        <mat-icon class="!text-base transition-transform group-hover:-translate-x-1 !w-4 !h-4 flex items-center justify-center">arrow_back</mat-icon>
+        RETOUR
+      </button>
+    </div>
+
+    <!-- MAIN CONTENT BOX -->
+    <div class="border-[4px] border-balawi-bg bg-white overflow-hidden shadow-[8px_8px_0px_0px_#A3FF12]">
+      
+      <!-- LOADING STATE -->
+      <div *ngIf="loading()" class="p-16 text-center flex flex-col items-center">
+        <div class="brutalist-loader">
+          <div class="loader-box"></div>
+          <div class="loader-box"></div>
+          <div class="loader-box"></div>
+        </div>
+        <p class="mt-6 font-heading text-balawi-bg uppercase tracking-widest animate-pulse text-[10px] italic font-bold">CHARGEMENT...</p>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div *ngIf="!loading() && orders().length === 0" class="p-16 text-center">
+        <div class="w-16 h-16 bg-balawi-bg text-balawi-neon flex items-center justify-center mx-auto mb-6 shadow-[6px_6px_0px_0px_#A3FF12] rotate-3">
+          <mat-icon style="font-size: 32px; width: 32px; height: 32px;" class="flex items-center justify-center">shopping_bag</mat-icon>
+        </div>
+        <h3 class="text-2xl font-heading text-balawi-bg uppercase mb-3 italic font-black">AUCUN ACHAT</h3>
+        <p class="font-slogan text-xs text-balawi-bg/60 uppercase tracking-widest mb-8 max-w-sm mx-auto leading-relaxed italic font-bold">
+          Vous n'avez pas encore trouvé la pièce rare ? Explorez notre sélection !
+        </p>
+        <button routerLink="/search" class="inline-flex items-center gap-2.5 bg-balawi-neon text-balawi-bg px-6 py-3.5 font-heading text-base uppercase tracking-widest hover:bg-white border-[3px] border-balawi-bg transition-all shadow-[6px_6px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] italic font-bold">
+          <mat-icon class="!text-xl !w-6 !h-6 flex items-center justify-center">explore</mat-icon>
+          DÉCOUVRIR LES ARTICLES
+        </button>
+      </div>
+
+      <!-- PURCHASES LIST -->
+      <div *ngIf="!loading() && orders().length > 0" class="divide-y-[3px] divide-balawi-bg">
+        <div *ngFor="let order of orders()" 
+             class="p-4 sm:p-6 hover:bg-balawi-neon/5 flex flex-col md:flex-row items-center gap-5 transition-all group relative">
+          
+          <!-- Product Image -->
+          <div class="w-20 h-20 sm:w-28 sm:h-28 border-[3px] border-balawi-bg flex-shrink-0 bg-white shadow-[3px_3px_0px_0px_#0B0B0B] group-hover:-rotate-2 transition-transform overflow-hidden">
+            <img *ngIf="order.itemImageUrl" [src]="authService.toAbsoluteUrl(order.itemImageUrl)" 
+                 class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" [alt]="order.itemTitle">
+            <div *ngIf="!order.itemImageUrl" class="w-full h-full flex items-center justify-center text-balawi-bg/20">
+              <mat-icon class="!text-3xl !w-8 !h-8 flex items-center justify-center">image</mat-icon>
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div class="flex-1 min-w-0 text-center md:text-left space-y-2.5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <h3 class="text-lg sm:text-xl font-heading text-balawi-bg uppercase tracking-tight truncate hover:text-balawi-neon transition-colors cursor-pointer italic font-black" 
+                  [routerLink]="['/items', order.itemId]">
+                {{ order.itemTitle }}
+              </h3>
+              <span class="text-lg md:text-xl font-heading text-balawi-bg bg-balawi-neon px-2.5 py-0.5 inline-block shrink-0 italic font-black">
+                {{ order.amount | number:'1.2-2' }} €
+              </span>
+            </div>
+
+            <div class="flex flex-wrap justify-center md:justify-start items-center gap-x-5 gap-y-1.5">
+              <div class="flex items-center gap-1.5">
+                <span class="font-heading text-[9px] text-balawi-bg/40 uppercase tracking-widest italic font-bold">VENDEUR</span>
+                <a [routerLink]="['/users', order.sellerId]" class="font-heading text-[10px] text-balawi-bg uppercase tracking-tight border-b-2 border-balawi-neon hover:bg-balawi-neon transition-all italic font-bold">
+                  {{ order.sellerName || 'VENDEUR' }}
+                </a>
+              </div>
+              
+              <button (click)="contactSeller(order)" 
+                      class="flex items-center gap-1.5 bg-balawi-bg text-white px-2.5 py-1 font-heading text-[9px] uppercase tracking-widest hover:bg-balawi-neon hover:text-balawi-bg transition-colors shadow-[2px_2px_0px_0px_#A3FF12] hover:shadow-none italic font-bold">
+                <mat-icon class="!text-xs !w-3 !h-3 flex items-center justify-center">chat</mat-icon>
+                CONTACTER
+              </button>
+            </div>
+
+            <div class="flex flex-wrap justify-center md:justify-start items-center gap-2.5 pt-1.5">
+              <span class="font-heading text-[9px] text-balawi-bg/40 uppercase tracking-widest italic font-bold">STATUT</span>
+              <span [class]="'px-2.5 py-1 border-[2px] font-heading text-[10px] uppercase tracking-widest italic font-bold ' + getStatusClass(order.status)">
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Action -->
+          <div class="flex-shrink-0 flex items-center gap-3">
+            <button *ngIf="order.status === 'PENDING_PAYMENT'" 
+                    [routerLink]="['/checkout']" [queryParams]="{orderId: order.id}"
+                    class="bg-balawi-neon text-balawi-bg px-3 py-1.5 font-heading text-[10px] uppercase tracking-widest border-[2px] border-balawi-bg shadow-[3px_3px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all italic font-black">
+              PAYER
+            </button>
+            <button [routerLink]="['/items', order.itemId]" 
+                    class="w-10 h-10 border-[3px] border-balawi-bg flex items-center justify-center hover:bg-balawi-neon transition-all shadow-[3px_3px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
+              <mat-icon class="!text-2xl !w-6 !h-6 flex items-center justify-center">chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div *ngIf="totalPages() > 1" class="mt-10 flex justify-center items-center gap-4">
+      <button (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 0"
+              class="w-10 h-10 border-[3px] border-balawi-bg flex items-center justify-center bg-white text-balawi-bg hover:bg-balawi-neon disabled:opacity-30 disabled:hover:bg-white transition-all shadow-[3px_3px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] disabled:shadow-[3px_3px_0px_0px_#0B0B0B] disabled:translate-x-0 disabled:translate-y-0">
+        <mat-icon class="!text-xl !w-5 !h-5 flex items-center justify-center">chevron_left</mat-icon>
+      </button>
+      
+      <div class="bg-balawi-bg text-white px-4 py-1.5 font-heading text-[10px] uppercase tracking-widest italic font-bold">
+        PAGE {{ currentPage() + 1 }} / {{ totalPages() }}
+      </div>
+      
+      <button (click)="changePage(currentPage() + 1)" [disabled]="currentPage() >= totalPages() - 1"
+              class="w-10 h-10 border-[3px] border-balawi-bg flex items-center justify-center bg-white text-balawi-bg hover:bg-balawi-neon disabled:opacity-30 disabled:hover:bg-white transition-all shadow-[3px_3px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] disabled:shadow-[3px_3px_0px_0px_#0B0B0B] disabled:translate-x-0 disabled:translate-y-0">
+        <mat-icon class="!text-xl !w-5 !h-5 flex items-center justify-center">chevron_right</mat-icon>
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<app-navbar *ngIf="showNavbar"></app-navbar>
+
+<main [ngClass]="showNavbar ? 'pt-28' : ''" [class.min-h-screen]="!showFooter">
+  <router-outlet></router-outlet>
+</main>
+
+<app-footer *ngIf="showFooter"></app-footer>

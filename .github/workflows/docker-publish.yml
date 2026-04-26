@@ -1,0 +1,51 @@
+name: Docker Build & Publish (GHCR)
+
+on:
+  push:
+    branches: [ master, main, 'EF-*' ]
+    paths:
+      - 'ecovestiaire-backend/**'
+      - 'ecovestiaire-frontend/**'
+      - 'docker-compose.yml'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lowercase repo name
+        run: |
+          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build & Push Backend
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ecovestiaire-backend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}-backend:latest
+
+      # Build & Push Frontend
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ecovestiaire-frontend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}-frontend:latest

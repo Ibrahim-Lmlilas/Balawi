@@ -1,0 +1,38 @@
+name: CI Frontend (Angular)
+
+on:
+  push:
+    branches: [ master, main, develop, 'EF-*' ]
+    paths:
+      - 'ecovestiaire-frontend/**'
+  pull_request:
+    branches: [ master, main ]
+    paths:
+      - 'ecovestiaire-frontend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: ecovestiaire-frontend/package-lock.json
+
+    - name: Install dependencies
+      working-directory: ecovestiaire-frontend
+      run: npm install --legacy-peer-deps
+
+    - name: Lint
+      working-directory: ecovestiaire-frontend
+      run: npm run lint
+      continue-on-error: true # Permet de ne pas bloquer le build si le linting échoue pour l'instant
+
+    - name: Build
+      working-directory: ecovestiaire-frontend
+      run: npm run build -- --configuration production

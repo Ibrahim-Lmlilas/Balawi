@@ -1,0 +1,292 @@
+<div class="min-h-screen bg-white pb-20">
+  
+  <!-- PROFILE HEADER AREA -->
+  <div class="bg-balawi-bg text-white pt-8 pb-16 border-b-[6px] border-balawi-bg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div *ngIf="isLoading()" class="flex justify-center py-16">
+        <div class="brutalist-loader">
+          <div class="loader-box bg-balawi-neon"></div>
+          <div class="loader-box bg-balawi-neon"></div>
+          <div class="loader-box bg-balawi-neon"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading() && profile() as p" class="flex flex-col md:flex-row gap-8 items-center md:items-end relative">
+        
+        <!-- Avatar Box -->
+        <div class="relative shrink-0 group">
+          <div class="w-32 h-32 md:w-44 md:h-44 border-[6px] border-balawi-neon bg-balawi-bg shadow-[10px_10px_0px_0px_#0B0B0B] overflow-hidden relative">
+            <img [src]="authService.toAbsoluteUrl(p.profilePhotoUrl)" 
+                 class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 cursor-pointer"
+                 (click)="openPreview(authService.toAbsoluteUrl(p.profilePhotoUrl))">
+            
+            <!-- Edit Overlay for own profile -->
+            <button *ngIf="isOwnProfile()" (click)="editProfile()"
+                    class="absolute inset-0 bg-balawi-neon/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <mat-icon class="!text-balawi-bg !text-3xl">edit</mat-icon>
+              <span class="font-heading text-balawi-bg text-[10px] uppercase tracking-widest mt-1.5 italic font-bold">MODIFIER</span>
+            </button>
+          </div>
+          
+          <!-- Online Status Badge -->
+          <div class="absolute -bottom-3 -right-3 bg-balawi-neon text-balawi-bg px-3 py-1.5 border-[3px] border-balawi-bg font-heading text-[10px] uppercase tracking-widest shadow-[3px_3px_0px_0px_#0B0B0B] italic font-bold">
+            MEMBRE
+          </div>
+        </div>
+
+        <!-- Info & Stats -->
+        <div class="flex-1 text-center md:text-left space-y-4">
+          <div class="space-y-1.5">
+            <h1 class="text-2xl md:text-4xl font-heading uppercase tracking-tighter leading-none italic font-black">
+              {{ p.firstName }} <span class="text-balawi-neon">{{ p.lastName }}</span>
+            </h1>
+            <div class="flex flex-wrap justify-center md:justify-start items-center gap-3 text-[10px] font-slogan uppercase tracking-[0.15em] text-white/60">
+              <span class="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 border border-white/20 italic font-bold">
+                <mat-icon class="!text-sm !w-4 !h-4 flex items-center justify-center">location_on</mat-icon>
+                {{ p.location || 'CASABLANCA, MOROCCO' }}
+              </span>
+              <span class="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 border border-white/20 italic font-bold">
+                <mat-icon class="!text-sm !w-4 !h-4 flex items-center justify-center">calendar_today</mat-icon>
+                DEPUIS {{ (p.createdAt | date:'yyyy') || '2024' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div *ngIf="p.bio" class="max-w-xl bg-white/5 border-l-4 border-balawi-neon p-4 relative">
+            <mat-icon class="absolute -top-2.5 -left-2.5 !text-balawi-neon !text-lg !w-5 !h-5 flex items-center justify-center">format_quote</mat-icon>
+            <p class="font-slogan text-xs text-white/80 leading-relaxed italic">{{ p.bio }}</p>
+          </div>
+
+          <!-- Stats Badges -->
+          <div class="flex flex-wrap justify-center md:justify-start gap-3">
+            <div class="bg-balawi-neon text-balawi-bg px-4 py-2 border-[2px] border-balawi-bg flex flex-col items-center shadow-[4px_4px_0px_0px_#ffffff20]">
+              <span class="font-heading text-xl md:text-2xl leading-none italic font-black">{{ followersCount() }}</span>
+              <span class="font-heading text-[8px] uppercase tracking-widest mt-0.5 italic font-bold">FOLLOWERS</span>
+            </div>
+            <div class="bg-white text-balawi-bg px-4 py-2 border-[2px] border-balawi-bg flex flex-col items-center shadow-[4px_4px_0px_0px_#A3FF12]">
+              <span class="font-heading text-xl md:text-2xl leading-none italic font-black">{{ followingCount() }}</span>
+              <span class="font-heading text-[8px] uppercase tracking-widest mt-0.5 italic font-bold">FOLLOWING</span>
+            </div>
+            <div class="bg-balawi-bg text-balawi-neon px-4 py-2 border-[2px] border-balawi-neon flex flex-col items-center">
+              <span class="font-heading text-xl md:text-2xl leading-none italic font-black">{{ userItems().length }}</span>
+              <span class="font-heading text-[8px] uppercase tracking-widest mt-0.5 italic font-bold">ARTICLES</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Global Actions -->
+        <div class="flex flex-col gap-3 w-full md:w-auto md:absolute md:top-0 md:right-0">
+          <ng-container *ngIf="!isOwnProfile()">
+            <button (click)="follow()"
+                    [class]="isFollowing() ? 'bg-white text-balawi-bg border-balawi-bg' : 'bg-balawi-neon text-balawi-bg border-balawi-bg'"
+                    class="w-full md:w-40 py-3 font-heading text-sm uppercase tracking-widest border-[3px] shadow-[6px_6px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] transition-all flex items-center justify-center gap-2.5 italic font-bold">
+              <mat-icon class="!text-lg !w-5 !h-5 !flex !items-center !justify-center !leading-none">{{ isFollowing() ? 'person_remove' : 'person_add' }}</mat-icon>
+              {{ isFollowing() ? 'UNFOLLOW' : 'FOLLOW' }}
+            </button>
+            <button (click)="sendMessage()"
+                    class="w-full md:w-40 py-3 bg-balawi-bg text-white border-[3px] border-balawi-neon shadow-[6px_6px_0px_0px_#A3FF12] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] transition-all flex items-center justify-center gap-2.5 italic font-bold">
+              <mat-icon class="!text-lg !w-5 !h-5 !flex !items-center !justify-center !leading-none">chat</mat-icon>
+              MESSAGE
+            </button>
+          </ng-container>
+          <button *ngIf="isOwnProfile()" (click)="publishItem()"
+                  class="w-full md:w-40 py-3 bg-balawi-neon text-balawi-bg border-[3px] border-balawi-bg shadow-[6px_6px_0px_0px_#ffffff20] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] transition-all flex items-center justify-center gap-2.5 italic font-bold">
+            <mat-icon class="!text-lg !w-5 !h-5 !flex !items-center !justify-center !leading-none">add_circle</mat-icon>
+            VENDRE
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT SECTION -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
+    
+    <!-- TABS / FILTERS -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white border-[4px] border-balawi-bg p-4 shadow-[8px_8px_0px_0px_#A3FF12]">
+      
+      <div class="flex items-center gap-1.5 p-1 bg-gray-100 border-[2px] border-balawi-bg">
+        <button (click)="setStatusFilter('ALL')" 
+                [class.bg-balawi-bg]="selectedStatus() === 'ALL'" [class.text-balawi-neon]="selectedStatus() === 'ALL'"
+                class="px-4 py-1.5 font-heading text-[10px] uppercase tracking-widest transition-all italic font-bold">TOUT</button>
+        <button (click)="setStatusFilter('AVAILABLE')" 
+                [class.bg-balawi-bg]="selectedStatus() === 'AVAILABLE'" [class.text-balawi-neon]="selectedStatus() === 'AVAILABLE'"
+                class="px-4 py-1.5 font-heading text-[10px] uppercase tracking-widest transition-all italic font-bold">DISPONIBLE</button>
+        <button (click)="setStatusFilter('SOLD')" 
+                [class.bg-balawi-bg]="selectedStatus() === 'SOLD'" [class.text-balawi-neon]="selectedStatus() === 'SOLD'"
+                class="px-4 py-1.5 font-heading text-[10px] uppercase tracking-widest transition-all italic font-bold">VENDU</button>
+      </div>
+
+      <div class="flex items-center gap-3 w-full md:w-auto">
+        <mat-icon class="text-balawi-bg/30 !text-lg !w-5 !h-5 flex items-center justify-center">filter_list</mat-icon>
+        <div class="relative flex-1 md:w-56">
+          <select [ngModel]="selectedCategoryId()" (ngModelChange)="setCategoryFilter($event)"
+                  class="w-full px-3 py-1.5 border-[2px] border-balawi-bg font-heading text-[10px] uppercase tracking-widest outline-none focus:bg-balawi-neon/10 appearance-none bg-white italic font-bold">
+            <option [ngValue]="null">TOUTES LES CATÉGORIES</option>
+            <option *ngFor="let cat of categories()" [ngValue]="cat.id">{{ cat.name | uppercase }}</option>
+          </select>
+          <mat-icon class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none !text-lg">expand_more</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- MUTUAL FRIENDS (If any) -->
+    <div *ngIf="mutualFriends().length > 0 && !isOwnProfile()" class="mt-8 space-y-3">
+      <h3 class="font-heading text-[10px] text-balawi-bg/40 uppercase tracking-widest italic font-bold">
+        {{ mutualFriends().length }} {{ getFriendLabel(profile()?.firstName || '') }}{{ mutualFriends().length > 1 ? 's' : '' }} en commun
+      </h3>
+      <div class="flex -space-x-3">
+        <div *ngFor="let friend of mutualFriends().slice(0, 5)" 
+             class="w-10 h-10 border-[2px] border-balawi-bg overflow-hidden bg-balawi-neon group cursor-pointer relative shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]">
+          <img [src]="authService.toAbsoluteUrl(friend.profilePhotoUrl)" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
+        </div>
+        <div *ngIf="mutualFriends().length > 5" class="w-10 h-10 border-[2px] border-balawi-bg bg-balawi-bg text-balawi-neon flex items-center justify-center font-heading text-[10px] italic font-black">
+          +{{ mutualFriends().length - 5 }}
+        </div>
+      </div>
+    </div>
+
+    <!-- ITEM GRID -->
+    <div class="mt-8">
+      <div *ngIf="isLoadingItems()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div *ngFor="let i of [1,2,3,4]" class="aspect-[3/4] border-[3px] border-balawi-bg bg-gray-100 animate-pulse"></div>
+      </div>
+
+      <div *ngIf="!isLoadingItems() && filteredItems().length === 0" class="py-24 text-center border-[4px] border-dashed border-balawi-bg/10">
+        <mat-icon class="!text-4xl text-balawi-bg/10 mb-4 !w-10 !h-10 flex items-center justify-center">shopping_bag</mat-icon>
+        <p class="font-heading text-lg text-balawi-bg/20 uppercase italic font-bold">AUCUN ARTICLE TROUVÉ</p>
+      </div>
+
+      <div *ngIf="!isLoadingItems() && filteredItems().length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <app-item-card *ngFor="let item of filteredItems()" 
+                      [item]="item" 
+                      [showActions]="isOwnProfile()"
+                      (deleted)="onItemDeleted($event)">
+        </app-item-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT PROFILE MODAL (BRUTALIST STYLE) -->
+  <div *ngIf="isEditOpen()" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-balawi-bg/80 backdrop-blur-sm" (click)="closeEditModal()"></div>
+    
+    <div class="relative w-full max-w-3xl bg-white border-[6px] border-balawi-bg shadow-[12px_12px_0px_0px_#A3FF12] overflow-y-auto max-h-[90vh]">
+      <div class="p-6 sm:p-10">
+        <div class="flex items-center justify-between mb-8 border-b-[4px] border-balawi-bg pb-4">
+          <h2 class="text-2xl font-heading text-balawi-bg uppercase tracking-tight italic font-black">
+            MODIFIER LE <span class="text-balawi-neon bg-balawi-bg px-2">PROFIL</span>
+          </h2>
+          <button (click)="closeEditModal()" class="w-10 h-10 border-[3px] border-balawi-bg flex items-center justify-center hover:bg-balawi-neon transition-all shadow-[3px_3px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
+            <mat-icon class="!text-xl !w-5 !h-5 flex items-center justify-center">close</mat-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="editForm" (ngSubmit)="saveProfile()" class="space-y-8">
+          
+          <div class="flex flex-col md:flex-row gap-8">
+            <!-- Left: Photo Edit -->
+            <div class="md:w-1/3 flex flex-col items-center gap-4">
+              <div class="w-32 h-32 border-[4px] border-balawi-bg bg-balawi-neon relative group overflow-hidden shadow-[4px_4px_0px_0px_#0B0B0B]">
+                <img [src]="avatarPreviewUrl()" class="w-full h-full object-cover">
+                <label class="absolute inset-0 bg-balawi-bg/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer">
+                  <input type="file" class="hidden" (change)="onPhotoSelected($event)" accept="image/*">
+                  <mat-icon class="text-white !text-2xl !w-6 !h-6 flex items-center justify-center">photo_camera</mat-icon>
+                  <span class="text-white text-[8px] font-heading uppercase tracking-widest mt-1.5 italic font-bold">CHANGER</span>
+                </label>
+              </div>
+              <p class="font-heading text-[8px] text-center text-balawi-bg/40 uppercase tracking-widest italic font-bold">
+                UTILISEZ UNE PHOTO CLAIRE<br>POUR VOTRE PROFIL
+              </p>
+            </div>
+
+            <!-- Right: Form Fields -->
+            <div class="flex-1 space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                  <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">PRÉNOM</label>
+                  <input type="text" formControlName="firstName" class="w-full px-3 py-2 border-[3px] border-balawi-bg font-heading text-xs uppercase outline-none focus:bg-balawi-neon/10 italic font-bold">
+                </div>
+                <div class="space-y-1.5">
+                  <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">NOM</label>
+                  <input type="text" formControlName="lastName" class="w-full px-3 py-2 border-[3px] border-balawi-bg font-heading text-xs uppercase outline-none focus:bg-balawi-neon/10 italic font-bold">
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">BIO</label>
+                <textarea formControlName="bio" rows="2" class="w-full px-3 py-2 border-[3px] border-balawi-bg font-slogan text-xs outline-none focus:bg-balawi-neon/10 resize-none italic font-bold"></textarea>
+              </div>
+
+              <!-- Location Grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Country -->
+                <div class="space-y-1.5 relative">
+                  <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">PAYS</label>
+                  <div class="relative">
+                    <input type="text" [ngModel]="countrySearch()" (ngModelChange)="countrySearch.set($event)" [ngModelOptions]="{standalone: true}"
+                           (focus)="isCountryMenuOpen.set(true)"
+                           placeholder="RECHERCHER PAYS..."
+                           class="w-full px-3 py-2 border-[3px] border-balawi-bg font-heading text-xs uppercase outline-none focus:bg-balawi-neon/10 italic font-bold">
+                    <div *ngIf="isCountryMenuOpen()" class="absolute left-0 right-0 top-full mt-2 bg-white border-[3px] border-balawi-bg z-[210] max-h-40 overflow-y-auto shadow-[6px_6px_0px_0px_#0B0B0B]">
+                      <div *ngFor="let c of filteredCountries()" (click)="selectCountry(c)" 
+                           class="px-3 py-1.5 hover:bg-balawi-neon font-heading text-[10px] uppercase tracking-tight cursor-pointer border-b border-gray-100 last:border-0 italic font-bold">
+                        {{ c.name }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- City -->
+                <div class="space-y-1.5 relative">
+                  <label class="font-heading text-[10px] text-balawi-bg uppercase tracking-widest italic font-bold">VILLE</label>
+                  <div class="relative">
+                    <input type="text" [ngModel]="citySearch()" (ngModelChange)="citySearch.set($event)" [ngModelOptions]="{standalone: true}"
+                           (focus)="isCityMenuOpen.set(true)"
+                           placeholder="RECHERCHER VILLE..."
+                           [disabled]="isLoadingCities() || !editForm.get('country')?.value"
+                           class="w-full px-3 py-2 border-[3px] border-balawi-bg font-heading text-xs uppercase outline-none focus:bg-balawi-neon/10 disabled:opacity-30 italic font-bold">
+                    <div *ngIf="isCityMenuOpen() && filteredCities().length > 0" class="absolute left-0 right-0 top-full mt-2 bg-white border-[3px] border-balawi-bg z-[210] max-h-40 overflow-y-auto shadow-[6px_6px_0px_0px_#0B0B0B]">
+                      <div *ngFor="let city of filteredCities()" (click)="selectCity(city)" 
+                           class="px-3 py-1.5 hover:bg-balawi-neon font-heading text-[10px] uppercase tracking-tight cursor-pointer border-b border-gray-100 last:border-0 italic font-bold">
+                        {{ city }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="editErrorMessage()" class="p-3 bg-red-500 text-white font-heading text-[10px] uppercase tracking-widest border-[2px] border-balawi-bg italic font-bold">
+            {{ editErrorMessage() }}
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="pt-6 border-t-[4px] border-balawi-bg flex flex-col sm:flex-row justify-end gap-4">
+            <button type="button" (click)="closeEditModal()" class="font-heading text-xs uppercase tracking-widest text-balawi-bg hover:text-balawi-neon italic font-bold">ANNULER</button>
+            <button type="submit" [disabled]="isSavingProfile()"
+                    class="px-8 py-3.5 bg-balawi-neon text-balawi-bg border-[3px] border-balawi-bg font-heading text-lg uppercase tracking-widest shadow-[6px_6px_0px_0px_#0B0B0B] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] transition-all flex items-center justify-center gap-3 disabled:opacity-50 italic font-black">
+              <span *ngIf="!isSavingProfile()">ENREGISTRER</span>
+              <div *ngIf="isSavingProfile()" class="w-5 h-5 border-3 border-balawi-bg border-t-transparent rounded-full animate-spin"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE PREVIEW OVERLAY -->
+  <div *ngIf="isPreviewOpen()" class="fixed inset-0 z-[300] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-balawi-bg/95" (click)="closePreview()"></div>
+    <div class="relative max-w-4xl max-h-[90vh] border-[6px] border-balawi-neon shadow-[20px_20px_0px_0px_#0B0B0B]">
+      <img [src]="previewImageUrl()" class="w-full h-full object-contain">
+      <button (click)="closePreview()" class="absolute -top-10 -right-2 text-balawi-neon hover:text-white transition-colors">
+        <mat-icon class="!text-3xl !w-8 !h-8 flex items-center justify-center">close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+</div>
