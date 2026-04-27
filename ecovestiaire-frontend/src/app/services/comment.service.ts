@@ -20,10 +20,22 @@ export class CommentService {
   private baseUrl = inject(API_BASE_URL);
 
   private toAbsoluteUrl(path: string | null | undefined): string | null {
-    if (!path) return null;
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    const normalized = path.startsWith('/') ? path.slice(1) : path;
-    return `${this.baseUrl}/${normalized}`;
+    if (!path || path === 'null' || path === 'undefined') return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path.replace('/api/uploads/', '/uploads/');
+    }
+
+    const normalized = path.startsWith('/') ? path : '/' + path;
+    const apiBase = this.baseUrl.replace(/\/api$/, '');
+
+    if (normalized.startsWith('/uploads/') || normalized.startsWith('/api/uploads/')) {
+      const uploadPath = normalized.startsWith('/api/uploads/') 
+        ? normalized.substring(4) 
+        : normalized;
+      return `${apiBase}${uploadPath}`.replace(/\/+/g, '/');
+    }
+
+    return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
   }
 
   private mapAnyToComment(r: any): Comment {

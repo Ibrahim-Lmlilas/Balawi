@@ -21,11 +21,25 @@ export class ItemService {
   private http = inject(HttpClient);
   private baseUrl = inject(API_BASE_URL);
 
-  private toAbsoluteUrl(path: string): string {
-    if (!path) return path;
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    const normalized = path.startsWith('/') ? path.slice(1) : path;
-    return `${this.baseUrl}/${normalized}`;
+  private toAbsoluteUrl(path: string | null | undefined): string {
+    if (!path || path === 'null' || path === 'undefined') return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path.replace('/api/uploads/', '/uploads/');
+    }
+
+    const normalized = path.startsWith('/') ? path : '/' + path;
+    const apiBase = this.baseUrl.replace(/\/api$/, '');
+
+    // Si c'est un chemin d'upload, on ne veut pas le préfixe /api
+    if (normalized.startsWith('/uploads/') || normalized.startsWith('/api/uploads/')) {
+      const uploadPath = normalized.startsWith('/api/uploads/') 
+        ? normalized.substring(4) 
+        : normalized;
+      return `${apiBase}${uploadPath}`.replace(/\/+/g, '/');
+    }
+
+    // Pour les autres appels API si nécessaire (rare pour des images)
+    return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
   }
 
   private mapItemResponseToItem(r: any): Item {

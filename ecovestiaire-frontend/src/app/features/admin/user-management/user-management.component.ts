@@ -56,13 +56,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   getAbsoluteUrl(path: string | null | undefined): string {
-    if (!path) return '';
-    if (path.startsWith('http')) return path;
-    const cleanPath = path.startsWith('/') ? path : '/' + path;
-    if (cleanPath.startsWith('/uploads')) {
-      return cleanPath;
-    }
-    return '/api' + cleanPath;
+    return this.authService.toAbsoluteUrl(path);
   }
 
   loadUsers() {

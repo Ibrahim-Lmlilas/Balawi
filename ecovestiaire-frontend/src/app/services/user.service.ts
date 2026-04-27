@@ -116,32 +116,20 @@ export class UserService {
 
 
 
-  private toAbsoluteUrl(path: string | null): string | null {
-
-    if (!path) return path;
-
-
-
-    // Fix legacy absolute URLs
-
+  private toAbsoluteUrl(path: string | null | undefined): string {
+    if (!path || path === 'null' || path === 'undefined') return '';
     if (path.startsWith('http://') || path.startsWith('https://')) {
-
       return path.replace('/api/uploads/', '/uploads/');
-
     }
-
-
-
-    // Static files are served from root (/uploads/**), API is under /api
-
+    const normalized = path.startsWith('/') ? path : '/' + path;
     const apiBase = this.baseUrl.replace(/\/api$/, '');
-
-    const cleaned = this.normalizeUploadsPath(path);
-
-    const normalized = cleaned.startsWith('/') ? cleaned.slice(1) : cleaned;
-
-    return `${apiBase}/${normalized}`;
-
+    if (normalized.startsWith('/uploads/') || normalized.startsWith('/api/uploads/')) {
+      const uploadPath = normalized.startsWith('/api/uploads/') 
+        ? normalized.substring(4) 
+        : normalized;
+      return `${apiBase}${uploadPath}`.replace(/\/+/g, '/');
+    }
+    return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
   }
 
 
