@@ -121,21 +121,9 @@ export class CategoryManagementComponent implements OnInit {
   toAbsoluteIconUrl(icon: string | null | undefined): string {
     if (!icon) return '';
     if (icon.startsWith('data:')) return icon;
-    if (icon.startsWith('http://') || icon.startsWith('https://')) {
-      return icon.replace('/api/uploads/', '/uploads/');
-    }
-    
-    const normalized = icon.startsWith('/') ? icon : '/' + icon;
-    const apiBase = this.baseUrl.replace(/\/api$/, '');
-
-    if (normalized.startsWith('/uploads/') || normalized.startsWith('/api/uploads/')) {
-      const uploadPath = normalized.startsWith('/api/uploads/') 
-        ? normalized.substring(4) 
-        : normalized;
-      return `${apiBase}${uploadPath}`.replace(/\/+/g, '/');
-    }
-
-    return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
+    if (icon.startsWith('http://') || icon.startsWith('https://')) return icon;
+    const normalized = icon.startsWith('/') ? icon.slice(1) : icon;
+    return `${this.baseUrl}/${normalized}`;
   }
 
   saveCategory() {

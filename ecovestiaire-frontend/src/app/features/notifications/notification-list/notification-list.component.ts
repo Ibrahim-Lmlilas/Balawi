@@ -190,11 +190,7 @@ export class NotificationListComponent implements OnInit, OnDestroy {
     });
 
     if (notif.link) {
-      let finalLink = notif.link;
-      if (finalLink.startsWith('/api/users/')) {
-        finalLink = finalLink.replace('/api/users/', '/users/');
-      }
-      this.router.navigateByUrl(finalLink);
+      this.router.navigateByUrl(notif.link);
     }
   }
 

@@ -104,45 +104,11 @@ export class UserService {
 
 
 
-  private normalizeUploadsPath(path: string): string {
-
-    if (path.startsWith('/api/uploads/')) return path.replace('/api/uploads/', '/uploads/');
-
-    if (path.startsWith('api/uploads/')) return path.replace('api/uploads/', 'uploads/');
-
-    return path;
-
-  }
-
-
-
   private toAbsoluteUrl(path: string | null | undefined): string {
     if (!path || path === 'null' || path === 'undefined') return '';
-    
-    let cleaned = path;
-    
-    if (cleaned.includes('/uploads/')) {
-      if (cleaned.includes('/api/uploads/')) {
-        cleaned = cleaned.replace('/api/uploads/', '/uploads/');
-      } else if (cleaned.startsWith('api/uploads/')) {
-        cleaned = cleaned.replace('api/uploads/', 'uploads/');
-      }
-    }
-
-    if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
-      return cleaned;
-    }
-
-    const normalized = cleaned.startsWith('/') ? cleaned : '/' + cleaned;
-    const apiBase = this.baseUrl.replace(/\/api$/, '');
-
-    if (normalized.startsWith('/uploads/')) {
-      const finalUrl = `${apiBase}${normalized}`.replace(/\/+/g, '/');
-      console.log(`DEBUG URL (User): ${path} -> ${finalUrl}`);
-      return finalUrl;
-    }
-
-    return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    const normalized = path.startsWith('/') ? path.slice(1) : path;
+    return `${this.baseUrl}/${normalized}`;
   }
 
 

@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("/payments")
 public class PaymentController {
 
     private static final Logger log = LoggerFactory.getLogger(PaymentController.class);

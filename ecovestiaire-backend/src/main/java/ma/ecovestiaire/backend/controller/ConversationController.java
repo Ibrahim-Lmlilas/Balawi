@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/conversations")
+@RequestMapping("/conversations")
 public class ConversationController {
 
     private final ConversationService conversationService;

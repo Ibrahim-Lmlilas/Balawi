@@ -21,34 +21,11 @@ export class ItemService {
   private http = inject(HttpClient);
   private baseUrl = inject(API_BASE_URL);
 
-  private toAbsoluteUrl(path: string | null | undefined): string {
-    if (!path || path === 'null' || path === 'undefined') return '';
-    
-    let cleaned = path;
-    
-    // Règle d'or : On ne veut JAMAIS de /api devant /uploads
-    if (cleaned.includes('/uploads/')) {
-      if (cleaned.includes('/api/uploads/')) {
-        cleaned = cleaned.replace('/api/uploads/', '/uploads/');
-      } else if (cleaned.startsWith('api/uploads/')) {
-        cleaned = cleaned.replace('api/uploads/', 'uploads/');
-      }
-    }
-
-    if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
-      return cleaned;
-    }
-
-    const normalized = cleaned.startsWith('/') ? cleaned : '/' + cleaned;
-    const apiBase = this.baseUrl.replace(/\/api$/, '');
-
-    if (normalized.startsWith('/uploads/')) {
-      const finalUrl = `${apiBase}${normalized}`.replace(/\/+/g, '/');
-      console.log(`DEBUG URL: ${path} -> ${finalUrl}`);
-      return finalUrl;
-    }
-
-    return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
+  private toAbsoluteUrl(path: string): string {
+    if (!path) return path;
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    const normalized = path.startsWith('/') ? path.slice(1) : path;
+    return `${this.baseUrl}/${normalized}`;
   }
 
   private mapItemResponseToItem(r: any): Item {
@@ -131,14 +108,11 @@ export class ItemService {
   }
 
   getCategories(): Observable<Category[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/categories`).pipe(
-      map(cats => (cats || []).map(c => {
-        const iconPath = c.icon || c.iconPath || c.iconUrl;
-        return {
-          ...c,
-          icon: iconPath ? this.toAbsoluteUrl(iconPath) : undefined
-        };
-      }))
+    return this.http.get<Category[]>(`${this.baseUrl}/categories`).pipe(
+      map(cats => (cats || []).map(c => ({
+        ...c,
+        icon: c.icon ? this.toAbsoluteUrl(c.icon) : undefined
+      })))
     );
   }
 

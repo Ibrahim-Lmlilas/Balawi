@@ -21,31 +21,9 @@ export class CommentService {
 
   private toAbsoluteUrl(path: string | null | undefined): string | null {
     if (!path || path === 'null' || path === 'undefined') return null;
-    
-    let cleaned = path;
-    
-    if (cleaned.includes('/uploads/')) {
-      if (cleaned.includes('/api/uploads/')) {
-        cleaned = cleaned.replace('/api/uploads/', '/uploads/');
-      } else if (cleaned.startsWith('api/uploads/')) {
-        cleaned = cleaned.replace('api/uploads/', 'uploads/');
-      }
-    }
-
-    if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
-      return cleaned;
-    }
-
-    const normalized = cleaned.startsWith('/') ? cleaned : '/' + cleaned;
-    const apiBase = this.baseUrl.replace(/\/api$/, '');
-
-    if (normalized.startsWith('/uploads/')) {
-      const finalUrl = `${apiBase}${normalized}`.replace(/\/+/g, '/');
-      console.log(`DEBUG URL (Comment): ${path} -> ${finalUrl}`);
-      return finalUrl;
-    }
-
-    return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    const normalized = path.startsWith('/') ? path.slice(1) : path;
+    return `${this.baseUrl}/${normalized}`;
   }
 
   private mapAnyToComment(r: any): Comment {

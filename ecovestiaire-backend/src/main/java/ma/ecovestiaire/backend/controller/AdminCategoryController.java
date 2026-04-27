@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/api/admin/categories")
+@RequestMapping("/admin/categories")
 public class AdminCategoryController {
 
     private final CategoryService categoryService;
