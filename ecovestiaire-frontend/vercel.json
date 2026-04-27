@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://balawi.onrender.com/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://balawi.onrender.com/uploads/:path*"
+    },
+    {
+      "source": "/ws/:path*",
+      "destination": "https://balawi.onrender.com/ws/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
