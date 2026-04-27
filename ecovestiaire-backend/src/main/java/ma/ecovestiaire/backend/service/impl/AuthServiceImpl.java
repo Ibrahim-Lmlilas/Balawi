@@ -72,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Path path = Paths.get(uploadDir + fileName);
             Files.copy(file.getInputStream(), path);
-            return "/" + uploadDir + fileName;
+            return uploadDir + fileName;
         } catch (IOException e) {
             throw new RuntimeException("Could not save profile picture", e);
         }

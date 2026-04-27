@@ -40,7 +40,7 @@ import java.util.List;
 
 @RestController
 
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 
 public class AdminModerationController {
 

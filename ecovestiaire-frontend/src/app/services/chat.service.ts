@@ -49,7 +49,7 @@ export class ChatService {
   // --- REST API ---
 
   getConversations(): Observable<ConversationSummaryResponse[]> {
-    return this.http.get<ConversationSummaryResponse[]>(`${this.baseUrl}/api/conversations`).pipe(
+    return this.http.get<ConversationSummaryResponse[]>(`${this.baseUrl}/conversations`).pipe(
       map(convs => convs.map(c => ({
         ...c,
         otherUserProfilePhotoUrl: this.authService.toAbsoluteUrl(c.otherUserProfilePhotoUrl) || ''
@@ -63,7 +63,7 @@ export class ChatService {
   }
 
   getConversationMessages(id: number, page: number = 0, size: number = 20): Observable<MessageResponse[]> {
-    return this.http.get<any>(`${this.baseUrl}/api/conversations/${id}/messages`, {
+    return this.http.get<any>(`${this.baseUrl}/conversations/${id}/messages`, {
       params: { page: page.toString(), size: size.toString() }
     }).pipe(
       map(response => {
@@ -79,19 +79,19 @@ export class ChatService {
   }
 
   startConversation(request: StartConversationRequest): Observable<ConversationSummaryResponse> {
-    return this.http.post<ConversationSummaryResponse>(`${this.baseUrl}/api/conversations`, request);
+    return this.http.post<ConversationSummaryResponse>(`${this.baseUrl}/conversations`, request);
   }
 
   sendMessage(conversationId: number, content: string): Observable<MessageResponse> {
-    return this.http.post<MessageResponse>(`${this.baseUrl}/api/conversations/${conversationId}/messages`, { content });
+    return this.http.post<MessageResponse>(`${this.baseUrl}/conversations/${conversationId}/messages`, { content });
   }
 
   deleteMessage(messageId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/api/conversations/messages/${messageId}`);
+    return this.http.delete<void>(`${this.baseUrl}/conversations/messages/${messageId}`);
   }
 
   updateMessage(messageId: number, content: string): Observable<MessageResponse> {
-    return this.http.put<MessageResponse>(`${this.baseUrl}/api/conversations/messages/${messageId}`, { content });
+    return this.http.put<MessageResponse>(`${this.baseUrl}/conversations/messages/${messageId}`, { content });
   }
 
   // --- WebSocket (STOMP) ---

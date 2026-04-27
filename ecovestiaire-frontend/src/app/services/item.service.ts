@@ -161,7 +161,7 @@ export class ItemService {
   }
 
   getFavorites(): Observable<Item[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/api/users/me/favorites`).pipe(
+    return this.http.get<any[]>(`${this.baseUrl}/users/me/favorites`).pipe(
       map((items) => (items || []).map((r) => {
         // Le backend renvoie FavoriteItemResponse : { itemId, title, price, imageUrl, likesCount, status }
         const item: Item = {

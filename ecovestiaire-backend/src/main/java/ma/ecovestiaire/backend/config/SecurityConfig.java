@@ -43,7 +43,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost", "https://balawi.vercel.app"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:[*]", "https://balawi.vercel.app", "http://*.balawi.ma", "https://*.balawi.ma"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -88,7 +88,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/ws/**").permitAll()
 
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         .anyRequest().permitAll()
                 )

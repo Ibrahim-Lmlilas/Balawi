@@ -148,7 +148,7 @@ export class UserService {
 
   getPublicProfileById(id: number): Observable<UserProfileResponse> {
 
-    return this.http.get<UserProfileResponse>(`${this.baseUrl}/api/users/${id}`);
+    return this.http.get<UserProfileResponse>(`${this.baseUrl}/users/${id}`);
 
   }
 
@@ -156,7 +156,7 @@ export class UserService {
 
   getMyProfile(): Observable<UserProfileResponse> {
 
-    return this.http.get<UserProfileResponse>(`${this.baseUrl}/api/users/me`);
+    return this.http.get<UserProfileResponse>(`${this.baseUrl}/users/me`);
 
   }
 
@@ -164,7 +164,7 @@ export class UserService {
 
   updateMyProfile(payload: UpdateUserProfileRequest): Observable<UserProfileResponse> {
 
-    return this.http.put<UserProfileResponse>(`${this.baseUrl}/api/users/me`, payload);
+    return this.http.put<UserProfileResponse>(`${this.baseUrl}/users/me`, payload);
 
   }
 
@@ -178,7 +178,7 @@ export class UserService {
 
 
 
-    const url = `${this.baseUrl}/api/users/me/photo`;
+    const url = `${this.baseUrl}/users/me/photo`;
 
     console.log('Uploading photo to:', url);
 
@@ -206,7 +206,7 @@ export class UserService {
 
     return this.http.get<PageResponse<UserSearchResult>>(
 
-      `${this.baseUrl}/api/users/search?q=${encodeURIComponent(q)}&page=${page}&pageSize=${pageSize}`
+      `${this.baseUrl}/users/search?q=${encodeURIComponent(q)}&page=${page}&pageSize=${pageSize}`
 
     );
 
@@ -216,7 +216,7 @@ export class UserService {
 
   followUser(id: number): Observable<any> {
 
-    return this.http.post(`${this.baseUrl}/api/users/${id}/follow`, {});
+    return this.http.post(`${this.baseUrl}/users/${id}/follow`, {});
 
   }
 
@@ -224,7 +224,7 @@ export class UserService {
 
   unfollowUser(id: number): Observable<any> {
 
-    return this.http.delete(`${this.baseUrl}/api/users/${id}/follow`);
+    return this.http.delete(`${this.baseUrl}/users/${id}/follow`);
 
   }
 
@@ -232,7 +232,7 @@ export class UserService {
 
   getFollowers(id: number): Observable<UserSearchResult[]> {
 
-    return this.http.get<UserSearchResult[]>(`${this.baseUrl}/api/users/${id}/followers`);
+    return this.http.get<UserSearchResult[]>(`${this.baseUrl}/users/${id}/followers`);
 
   }
 
@@ -240,7 +240,7 @@ export class UserService {
 
   getFollowing(id: number): Observable<UserSearchResult[]> {
 
-    return this.http.get<UserSearchResult[]>(`${this.baseUrl}/api/users/${id}/following`);
+    return this.http.get<UserSearchResult[]>(`${this.baseUrl}/users/${id}/following`);
 
   }
 

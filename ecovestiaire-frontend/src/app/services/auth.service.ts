@@ -89,26 +89,36 @@ export class AuthService {
     
     // Si c'est déjà une URL complète
     if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path.replace('localhost:4200', 'localhost:8080')
-                 .replace('/api/uploads/', '/uploads/');
+      // Nettoyage générique si on passe par le proxy Nginx en prod
+      return path.replace('/api/uploads/', '/uploads/');
     }
     
-    const apiBase = this.baseUrl.replace(/\/api$/, '');
-    
-    // Nettoyer le chemin
-    let cleaned = path;
-    if (cleaned.startsWith('/api/')) cleaned = cleaned.substring(4);
-    
-    // Cas spécifique : le chemin commence déjà par /uploads ou uploads
-    if (cleaned.startsWith('/uploads/') || cleaned.startsWith('uploads/')) {
-      if (!cleaned.startsWith('/')) cleaned = '/' + cleaned;
-    } 
-    // Cas spécifique : le chemin est juste le nom du fichier (ex: user-1.jpg)
-    else {
-      cleaned = '/uploads/users/' + (cleaned.startsWith('/') ? cleaned.substring(1) : cleaned);
+    // Déterminer la base de l'URL
+    // Si baseUrl est relative (ex: /api), on reste en relatif
+    if (this.baseUrl.startsWith('/')) {
+      const apiBase = this.baseUrl.replace(/\/api$/, '');
+      let cleaned = path.startsWith('/') ? path : '/' + path;
+      
+      // S'assurer qu'on utilise /uploads/ et pas /api/uploads/
+      if (cleaned.startsWith('/api/uploads/')) {
+        cleaned = cleaned.replace('/api/uploads/', '/uploads/');
+      } else if (!cleaned.startsWith('/uploads/')) {
+        // Si c'est juste un nom de fichier ou un chemin sans /uploads/
+        cleaned = '/uploads/' + (cleaned.startsWith('/') ? cleaned.substring(1) : cleaned);
+      }
+      
+      return `${apiBase}${cleaned}`.replace(/\/+/g, '/');
     }
 
-    // Éviter les doubles slashes lors de la concaténation
+    // Si baseUrl est absolue
+    const apiBase = this.baseUrl.replace(/\/api$/, '');
+    let cleaned = path;
+    if (cleaned.startsWith('/api/')) cleaned = cleaned.substring(4);
+    if (!cleaned.startsWith('/uploads/') && !cleaned.startsWith('uploads/')) {
+      cleaned = '/uploads/' + (cleaned.startsWith('/') ? cleaned.substring(1) : cleaned);
+    }
+    if (!cleaned.startsWith('/')) cleaned = '/' + cleaned;
+
     const finalUrl = `${apiBase}${cleaned}`.replace(/([^:]\/)\/+/g, "$1");
     return finalUrl;
   }

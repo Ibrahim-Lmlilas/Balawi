@@ -55,7 +55,7 @@ export class NotificationService {
       params = params.set('markAsRead', 'true');
     }
 
-    return this.http.get<any[]>(`${this.baseUrl}/api/notifications`, { params }).pipe(
+    return this.http.get<any[]>(`${this.baseUrl}/notifications`, { params }).pipe(
       tap((rows) => {
         console.log('Notifications received (markAsRead=' + markAsRead + '):', rows);
 
@@ -72,7 +72,7 @@ export class NotificationService {
   }
 
   markAsRead(id: number): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/api/notifications/${id}/read`, {}).pipe(
+    return this.http.put<void>(`${this.baseUrl}/notifications/${id}/read`, {}).pipe(
       tap(() => {
         const currentNotifications = this.notificationsSubject.value;
         const updatedNotifications = currentNotifications.map(n =>
