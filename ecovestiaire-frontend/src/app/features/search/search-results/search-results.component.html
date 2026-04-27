@@ -82,7 +82,7 @@
         <!-- Empty State -->
         <div *ngIf="!isLoading() && allItems().length === 0" class="border-4 border-balawi-bg p-16 text-center bg-gray-50">
           <mat-icon class="!text-6xl h-auto w-auto mb-6 text-balawi-bg/20">sentiment_very_dissatisfied</mat-icon>
-          <h3 class="text-3xl font-heading text-balawi-bg uppercase">Walou, makayn walo</h3>
+          <h3 class="text-3xl font-heading text-balawi-bg uppercase">Pas d'articles</h3>
           <p class="text-xs font-slogan text-balawi-bg/60 mt-2 uppercase tracking-widest">Aucun article ne correspond à votre recherche.</p>
           <button (click)="onCategoryChange(null)" class="mt-8 px-8 py-3 bg-balawi-bg text-white font-heading uppercase tracking-[0.2em] hover:bg-balawi-neon hover:text-balawi-bg transition-all">
             Tout Explorer
