@@ -23,22 +23,31 @@ export class ItemService {
 
   private toAbsoluteUrl(path: string | null | undefined): string {
     if (!path || path === 'null' || path === 'undefined') return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path.replace('/api/uploads/', '/uploads/');
+    
+    let cleaned = path;
+    
+    // Règle d'or : On ne veut JAMAIS de /api devant /uploads
+    if (cleaned.includes('/uploads/')) {
+      if (cleaned.includes('/api/uploads/')) {
+        cleaned = cleaned.replace('/api/uploads/', '/uploads/');
+      } else if (cleaned.startsWith('api/uploads/')) {
+        cleaned = cleaned.replace('api/uploads/', 'uploads/');
+      }
     }
 
-    const normalized = path.startsWith('/') ? path : '/' + path;
+    if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+      return cleaned;
+    }
+
+    const normalized = cleaned.startsWith('/') ? cleaned : '/' + cleaned;
     const apiBase = this.baseUrl.replace(/\/api$/, '');
 
-    // Si c'est un chemin d'upload, on ne veut pas le préfixe /api
-    if (normalized.startsWith('/uploads/') || normalized.startsWith('/api/uploads/')) {
-      const uploadPath = normalized.startsWith('/api/uploads/') 
-        ? normalized.substring(4) 
-        : normalized;
-      return `${apiBase}${uploadPath}`.replace(/\/+/g, '/');
+    if (normalized.startsWith('/uploads/')) {
+      const finalUrl = `${apiBase}${normalized}`.replace(/\/+/g, '/');
+      console.log(`DEBUG URL: ${path} -> ${finalUrl}`);
+      return finalUrl;
     }
 
-    // Pour les autres appels API si nécessaire (rare pour des images)
     return `${this.baseUrl}${normalized}`.replace(/([^:]\/)\/+/g, "$1");
   }
 
@@ -122,11 +131,14 @@ export class ItemService {
   }
 
   getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.baseUrl}/categories`).pipe(
-      map(cats => (cats || []).map(c => ({
-        ...c,
-        icon: c.icon ? this.toAbsoluteUrl(c.icon) : undefined
-      })))
+    return this.http.get<any[]>(`${this.baseUrl}/categories`).pipe(
+      map(cats => (cats || []).map(c => {
+        const iconPath = c.icon || c.iconPath || c.iconUrl;
+        return {
+          ...c,
+          icon: iconPath ? this.toAbsoluteUrl(iconPath) : undefined
+        };
+      }))
     );
   }
 
