@@ -24,7 +24,7 @@ import java.util.List;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/items")
+@RequestMapping("/api/items")
 public class ItemController {
     private final ItemService itemService;
     private final FavoriteService favoriteService;

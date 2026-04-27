@@ -43,7 +43,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost", "https://balawi.vercel.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -62,24 +62,25 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/categories").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/items", "/items/*").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/items/*").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/items/*").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/items", "/api/items/*").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/items/*").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/items/*").authenticated()
                         .requestMatchers("/api/users/me", "/api/users/me/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/users/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/*").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/payments/webhook").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/payments/**").authenticated()
 
-                        .requestMatchers(HttpMethod.POST, "/items/*/favorite").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/items/*/favorite").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/items/*/favorite").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/items/*/favorite").authenticated()
                         .requestMatchers("/api/users/me/favorites").authenticated()
 
-                        .requestMatchers(HttpMethod.POST, "/items/*/comments").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/comments/*").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/items/*/comments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/items/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/*").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/items/*/comments").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/notifications").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/notifications/read").authenticated()
